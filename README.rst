@@ -30,17 +30,16 @@ Python DSL for easily testing REST services.
 # Simple Use case:
 ----
 
-```python
+.. code-block:: python
 
-from restpite import Given
+    from restpite import Given
 
-def test_the_post(user_fixture) -> None:
-    Given("https://www.myapi.com")
-        .When()
-        .post()
-        .with_query_params({'user_id': user_fixture.id})
-        .with_headers({'Content-type': 'content_type_value'})
-        .Then()
-        .status_code().equals(200)
-        .body('result').equals("updated resource")
-```
+    def test_the_post(user_fixture) -> None:
+        Given("https://www.myapi.com")
+            .When()
+            .post()
+            .with_query_params({'user_id': user_fixture.id})
+            .with_headers({'Content-type': 'content_type_value'})
+            .Then()
+            .status_code().equals(200)
+            .body('result').equals("updated resource")
