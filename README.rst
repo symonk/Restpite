@@ -26,12 +26,9 @@ Python DSL for easily testing REST services.
 * Free software: MIT license
 * Documentation: https://restpite.readthedocs.io.
 
-
-# Simple Use case:
 ----
 
 ```python
-
 
 from restpite import Given
 
