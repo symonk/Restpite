@@ -15,7 +15,7 @@ Restpite
 
 
 .. image:: https://pyup.io/repos/github/symonk/restpite/shield.svg
-     :target: https://pyup.io/repos/github/symonk/restpite/
+     :target: https://pyup.io/account/repos/github/symonk/Restpite/
      :alt: Updates
 
 
