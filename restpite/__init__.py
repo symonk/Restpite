@@ -5,6 +5,6 @@ __email__ = "jackofspaces@gmail.com"
 __version__ = "0.1.0"
 
 
-from .http.request import Given
+from .http.request import given
 
-__all__ = ["Given"]
+__all__ = ["given"]

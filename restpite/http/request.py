@@ -94,8 +94,12 @@ class Given:
 
 
 class When:
-    ...
+    def then(self) -> Then:
+        ...
 
 
 class Then:
     ...
+
+
+given = Given

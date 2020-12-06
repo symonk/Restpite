@@ -35,11 +35,11 @@ Python DSL for easily testing REST services.
     from restpite import Given
 
     def test_the_post(user_fixture) -> None:
-        Given("https://www.myapi.com")
-            .When()
+        given("https://www.myapi.com")
+            .when()
             .post()
             .with_query_params({'user_id': user_fixture.id})
             .with_headers({'Content-type': 'content_type_value'})
-            .Then()
+            .then()
             .status_code().equals(200)
             .body('result').equals("updated resource")
