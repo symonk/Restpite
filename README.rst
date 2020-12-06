@@ -41,5 +41,6 @@ Python DSL for easily testing REST services.
             .with_query_params({'user_id': user_fixture.id})
             .with_headers({'Content-type': 'content_type_value'})
             .then()
-            .status_code().equals(200)
-            .body('result').equals("updated resource")
+            .assert_that()
+            .status_code(200)
+            .deserialized(ModelClazz).some_field == 15
