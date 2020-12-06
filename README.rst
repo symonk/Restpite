@@ -18,16 +18,10 @@ Restpite
      :target: https://pyup.io/account/repos/github/symonk/Restpite/
      :alt: Updates
 
+----
 
+## Example:
 
-Python DSL for easily testing REST services.
-
-
-* Free software: MIT license
-* Documentation: https://restpite.readthedocs.io.
-
-
-# Simple Use case:
 ----
 
 .. code-block:: python
@@ -45,3 +39,13 @@ Python DSL for easily testing REST services.
             .assert_that()
             .status_code(200)
             .deserialized(ModelClazz).some_field == 15
+
+
+
+----
+
+## Documentation
+
+----
+
+* Documentation: https://restpite.readthedocs.io.
