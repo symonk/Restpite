@@ -6,7 +6,7 @@ Restpite
 .. image:: https://img.shields.io/pypi/v/restpite.svg
         :target: https://pypi.python.org/pypi/restpite
 
-.. image:: https://img.shields.io/travis/symonk/restpite.svg
+.. image:: https://travis-ci.com/symonk/Restpite.svg?branch=master
         :target: https://travis-ci.com/symonk/restpite
 
 .. image:: https://readthedocs.org/projects/restpite/badge/?version=latest
