@@ -1,18 +1,101 @@
-from typing import Dict
+from __future__ import annotations
+
+from typing import Mapping
 from typing import Optional
 from urllib.parse import urlencode
 
 
 class Given:
-    def __init__(self, url: str, q_string: Dict[str, str]):
-        self.q_string = q_string
-        self.url = self._build_url(url, q_string)
+    def __init__(self, url: str, method: str = "get") -> None:
+        self.url = url
+        self.qs_params: Optional[Mapping[str, str]] = None
+        self.headers: Optional[Mapping[str, str]] = None
+        self.method = method.lower()
 
-    @staticmethod
-    def _build_url(url: str, params: Optional[Dict[str, str]] = None) -> str:
+    def _build_url(self, qs_params: Mapping[str, str]) -> str:
         """
         Encode query string params dictionary and append it to the URL.
-        :param params: Dictionary of k:v pairs to url encode and append to the url.
+        :param qs_params: Dictionary of k:v pairs to url encode and append to the url.
         :returns: Resolved url including query string params.
         """
-        return url if not params else f"{url}?{urlencode(params)}"
+        return self.url if not qs_params else f"{self.url}?{urlencode(qs_params)}"
+
+    def with_query_params(self, qs_params: Mapping[str, str]) -> Given:
+        """
+        Append query string params to the Given request object.
+        Resolve the url correctly given the data provided for the query string.
+        :param qs_params: Dictionary of k:v pairs to url encode and append to the url.
+        :returns: The (self) given request object for fluency.
+        """
+        self.qs_params = qs_params
+        self.url = self._build_url(qs_params)
+        return self
+
+    def with_headers(self, headers: Mapping[str, str]) -> Given:
+        """
+        Append the given headers dictionary into the request headers.
+        :param headers: Key:Value map object of headers.
+        :returns: The (self) given request object for fluency.
+        """
+        self.headers = headers
+        return self
+
+    def get(self) -> Given:
+        """
+        Configure the request method to HTTP GET
+        """
+        self.method = "get"
+        return self
+
+    def options(self) -> Given:
+        """
+        Configure the request method to HTTP OPTIONS
+        """
+        self.method = "options"
+        return self
+
+    def head(self) -> Given:
+        """
+        Configure the request method to HTTP HEAD
+        """
+        self.method = "head"
+        return self
+
+    def post(self) -> Given:
+        """
+        Configure the request method to HTTP POST
+        """
+        self.method = "post"
+        return self
+
+    def put(self) -> Given:
+        """
+        Configure the request method to HTTP PUT
+        """
+        self.method = "put"
+        return self
+
+    def patch(self) -> Given:
+        """
+        Configure the request method to HTTP PATCH
+        """
+        self.method = "patch"
+        return self
+
+    def delete(self) -> Given:
+        """
+        Configure the request method to HTTP DELETE
+        """
+        self.method = "delete"
+        return self
+
+    def when(self) -> When:
+        ...
+
+
+class When:
+    ...
+
+
+class Then:
+    ...
