@@ -1,0 +1,31 @@
+exclude: ^(.tox|docs|ci/templates|.bumpversion.cfg)(/|$)
+repos:
+  - repo: 'https://github.com/ambv/black'
+    rev: 18.6b4
+    hooks:
+      - id: black
+        args:
+          - '--safe'
+          - '--quiet'
+        language_version: python3.8
+  - repo: 'https://github.com/pre-commit/pre-commit-hooks'
+    rev: v1.3.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: debug-statements
+      - id: flake8
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: debug-statements
+      - id: detect-private-key
+      - id: requirements-txt-fixer
+  -   repo: https://github.com/pre-commit/mirrors-isort
+      rev: ''
+      hooks:
+      -   id: isort
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: ''
+    hooks:
+      - id: mypy
