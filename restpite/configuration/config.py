@@ -1,3 +1,3 @@
-class Config:
+class RestpiteConfig:
     def __init__(self) -> None:
         ...
