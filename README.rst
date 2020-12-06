@@ -33,6 +33,7 @@ Python DSL for easily testing REST services.
 .. code-block:: python
 
     from restpite import Given
+    from mymodels import ModelClazz
 
     def test_the_post(user_fixture) -> None:
         given("https://www.myapi.com")
