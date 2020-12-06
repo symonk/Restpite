@@ -14,7 +14,7 @@ Restpite
         :alt: Documentation Status
 
 
-.. image:: https://pyup.io/repos/github/symonk/restpite/shield.svg
+.. image:: https://pyup.io/repos/github/symonk/Restpite/shield.svg
      :target: https://pyup.io/account/repos/github/symonk/Restpite/
      :alt: Updates
 
