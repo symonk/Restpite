@@ -20,7 +20,7 @@ Restpite
 
 .. code-block:: python
 
-    from restpite import Given
+    from restpite import given
     from mymodels import ModelClazz
 
     def test_the_post(user_fixture) -> None:
