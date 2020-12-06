@@ -18,12 +18,6 @@ Restpite
      :target: https://pyup.io/account/repos/github/symonk/Restpite/
      :alt: Updates
 
-----
-
-## Example:
-
-----
-
 .. code-block:: python
 
     from restpite import Given
@@ -39,13 +33,3 @@ Restpite
             .assert_that()
             .status_code(200)
             .deserialized(ModelClazz).some_field == 15
-
-
-
-----
-
-## Documentation
-
-----
-
-* Documentation: https://restpite.readthedocs.io.
