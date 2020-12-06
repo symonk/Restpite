@@ -8,7 +8,8 @@ class Given:
         self.q_string = q_string
         self.url = self._build_url(url, q_string)
 
-    def _build_url(self, url: str, params: Optional[Dict[str, str]] = None) -> str:
+    @staticmethod
+    def _build_url(url: str, params: Optional[Dict[str, str]] = None) -> str:
         """
         Encode query string params dictionary and append it to the URL.
         :param params: Dictionary of k:v pairs to url encode and append to the url.
