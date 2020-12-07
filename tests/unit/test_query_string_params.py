@@ -1,14 +1,15 @@
-from restpite import given
+from assertpy import assert_that
+
+from restpite import Request
 
 
 def test_query_string_params() -> None:
     example_params = {"one": "one", "two": "two", "three": "three"}
-    expected = "http://www.google.com?one=one&two=two&three=three"
-    assert (
-        given(raise_when_unsuccessful=True)
-        .retry(1)
-        .when("http://www.google.com")
+    assert_that(
+        Request(url="http://www.google.com")
+        .raise_on_failure()
+        .retry(5)
         .with_query_params(example_params)
-        .url
-        == expected
-    )
+        .send()
+        .status_code
+    ).is_equal_to(200)

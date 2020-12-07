@@ -4,12 +4,10 @@ from typing import Mapping
 from typing import Optional
 from urllib.parse import urlencode
 
-from requests import Response
-
 from restpite import RestpiteConfig
 
 
-class When:
+class Request:
     def __init__(
         self, url: str, method: str = "get", config: Optional[RestpiteConfig] = None
     ) -> None:
@@ -19,6 +17,8 @@ class When:
         self.method = method.lower()
         self.request = None
         self.config = config
+        self._raise_on_failure = False
+        self.retries = 0
 
     def _build_url(self, qs_params: Mapping[str, str]) -> str:
         """
@@ -28,7 +28,15 @@ class When:
         """
         return self.url if not qs_params else f"{self.url}?{urlencode(qs_params)}"
 
-    def with_query_params(self, qs_params: Mapping[str, str]) -> When:
+    def raise_on_failure(self) -> Request:
+        self._raise_on_failure = True
+        return self
+
+    def retry(self, times: int = 0) -> Request:
+        self.retries = times
+        return self
+
+    def with_query_params(self, qs_params: Mapping[str, str]) -> Request:
         """
         Append query string params to the When request object.
         Resolve the url correctly given the data provided for the query string.
@@ -39,7 +47,7 @@ class When:
         self.url = self._build_url(qs_params)
         return self
 
-    def with_headers(self, headers: Mapping[str, str]) -> When:
+    def with_headers(self, headers: Mapping[str, str]) -> Request:
         """
         Append the given headers dictionary into the request headers.
         :param headers: Key:Value map object of headers.
@@ -48,78 +56,61 @@ class When:
         self.headers = headers
         return self
 
-    def get(self) -> When:
+    def get(self) -> Request:
         """
         Configure the request method to HTTP GET
         """
         self.method = "get"
         return self
 
-    def options(self) -> When:
+    def options(self) -> Request:
         """
         Configure the request method to HTTP OPTIONS
         """
         self.method = "options"
         return self
 
-    def head(self) -> When:
+    def head(self) -> Request:
         """
         Configure the request method to HTTP HEAD
         """
         self.method = "head"
         return self
 
-    def post(self) -> When:
+    def post(self) -> Request:
         """
         Configure the request method to HTTP POST
         """
         self.method = "post"
         return self
 
-    def put(self) -> When:
+    def put(self) -> Request:
         """
         Configure the request method to HTTP PUT
         """
         self.method = "put"
         return self
 
-    def patch(self) -> When:
+    def patch(self) -> Request:
         """
         Configure the request method to HTTP PATCH
         """
         self.method = "patch"
         return self
 
-    def delete(self) -> When:
+    def delete(self) -> Request:
         """
         Configure the request method to HTTP DELETE
         """
         self.method = "delete"
         return self
 
-    def then(self) -> Then:
+    def send(self) -> Response:
         # Fire the request, grab the response!
         # Build a Response/Then instance
         ...
 
 
-class Given:
-    def __init__(self, raise_when_unsuccessful: bool = False, retry: int = 0) -> None:
-        # configurations happen here
-        self.raise_when_unsuccessful = raise_when_unsuccessful
-        self._retry = retry
-
-    def when(self, *args, **kwargs) -> When:
-        return When(*args, **kwargs)
-
-    def retry(self, times: int = 0) -> Given:
-        self._retry = times
-        return self
-
-
-class Then:
-    def __init__(self, response: Response) -> None:
-        self.response = response
-
-
-given = Given
+class Response:
+    def __init__(self) -> None:
+        self.status_code = 200

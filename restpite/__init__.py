@@ -6,6 +6,6 @@ __version__ = "0.1.0"
 
 
 from .configuration.config import RestpiteConfig
-from .http.request import given
+from .http.request import Request
 
-__all__ = ["given", "RestpiteConfig"]
+__all__ = ["Request", "RestpiteConfig"]

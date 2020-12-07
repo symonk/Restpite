@@ -20,16 +20,15 @@ Restpite
 
 .. code-block:: python
 
-    from restpite import given
+    from restpite import Request
     from mymodels import ModelClazz
 
     def test_the_post(user_fixture) -> None:
-        given("https://www.myapi.com")
-            .when()
-            .post()
-            .with_query_params({'user_id': user_fixture.id})
-            .with_headers({'Content-type': 'content_type_value'})
-            .then()
-            .assert_that()
-            .status_code(200)
-            .deserialized(ModelClazz).some_field == 15
+        assert_that(
+            Request(url="http://www.google.com")
+            .raise_on_failure()
+            .retry(5)
+            .with_query_params(example_params)
+            .send()
+            .status_code
+        ).is_equal_to(200)
