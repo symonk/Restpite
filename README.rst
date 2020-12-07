@@ -21,7 +21,6 @@ Restpite
 .. code-block:: python
 
     from restpite import Request
-    from mymodels import ModelClazz
 
     def test_the_post(user_fixture) -> None:
         assert_that(

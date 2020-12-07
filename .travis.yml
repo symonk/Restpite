@@ -3,13 +3,3 @@ python:
 - 3.8
 install: pip install -U tox-travis
 script: tox
-deploy:
-  provider: pypi
-  distributions: sdist bdist_wheel
-  user: symonk
-  password:
-    secure: IwAgBuJq5dLEb/bPrK3GKShItNBonYl9SUQBlNxwO7HsYPXrIBFbzbve3+xEMLwt7WbbC3TbzZF+612lvdq6Z7A9VAiTTAG1AV2GmHu8RbnjOuy9SV/Q4kVxGxq91oZjGcrGUJSweHMM+qN5t82A8UVbwrA5SiF8pQ80pOEmStuTxrG1z3EnzDRNijE+N6fjWS5YVje42Xq54FVL7tf/UHEQGlK7NmlJNxgXEBG7nNo5Zy1ASvF/TdrAJRwwdsFU1dGBkRH/HkpG8HgFLjPXjBHpPbb4qBjNArughz2FHjjqc4Dx+WEET0Ddg1WJW8hmTkTd1AcSzKSrI/l3wv3RaGb3PJU5s0s6pZD2NS2BeMheZWmV/OZJJ6Jxufy2TOFc+BjFvejtPUJ9xuO1NmqA2MEBwkix8mpInVcwAfIobiubQbOH92esGDwpirR4Kx0TLOCaQeS7HGi+U2YuRtcm6Y0PCq8fpqVhFjIQYANZXI6DP9FH3IRDbUqoV13XsCc1QI8c5GrwGBd0NHhHM+lH26fzbHBK0Mr3rHrnRDIdpAbZFlEVtZKHkG8ZwrGlNMVZfYb3xb3pGKRX3WfvouD1sfhNd+na1C3fOUEmcmQ+o9toA9kVe9SbAvpqKhcbzTtRoKiem/r1m7Khx8t4gz6gnN/zA+AfoeF3Gai1MwXTmWg=
-  on:
-    tags: true
-    repo: symonk/restpite
-    python: 3.8

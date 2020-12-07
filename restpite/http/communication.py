@@ -7,6 +7,10 @@ from urllib.parse import urlencode
 from restpite import RestpiteConfig
 
 
+class Session:
+    ...
+
+
 class Request:
     def __init__(
         self, url: str, method: str = "get", config: Optional[RestpiteConfig] = None
@@ -108,7 +112,7 @@ class Request:
     def send(self) -> Response:
         # Fire the request, grab the response!
         # Build a Response/Then instance
-        ...
+        return Response()
 
 
 class Response:
