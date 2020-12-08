@@ -27,6 +27,8 @@ class Request:
         retryable: Optional[Tuple[int, Type[BaseException]]] = None,
         headers: Optional[Mapping[str, str]] = None,
         hooks: Optional[List[Callable[[Any], Any]]] = None,
+        connect_timeout: float = 10,
+        read_timeout: float = 10,
     ) -> None:
         self.url: str = self.url if not query_params else self._build_url(
             url, query_params
@@ -37,6 +39,7 @@ class Request:
         self.retryable = retryable
         self.headers = headers
         self.hooks = hooks
+        self.timeout = (connect_timeout, read_timeout)
 
     @staticmethod
     def _build_url(url: str, qs_params: Mapping[str, str]) -> str:
