@@ -21,11 +21,12 @@ Restpite
 .. code-block:: python
 
     from restpite import Request
+    from models import Car
 
-    def test_the_post(user_fixture) -> None:
+    def test_get_car(client_side_car) -> None:
         assert_that(
             Request(
-                url="http://www.google.com",
+                url="http://www.traffic.com/cars/",
                 query_params=example_params,
                 raise_on_failure=True,
                 retryable=(5, RequestException),
@@ -34,5 +35,5 @@ Restpite
                 hooks=[lambda x: print(x.json())]
             )
             .fire()
-            .status_code
-        ).is_equal_to(200)
+            .status_code_is(200)
+            .deserialize(Car).make).is_equal_to("Audi")
