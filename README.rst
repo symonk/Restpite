@@ -29,6 +29,9 @@ Restpite
                 query_params=example_params,
                 raise_on_failure=True,
                 retryable=(5, RequestException),
+                connect_timeout=30,
+                read_timeout=15,
+                hooks=[lambda x: print(x.json())]
             )
             .fire()
             .status_code
