@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from typing import Any
+from typing import Callable
+from typing import List
 from typing import Mapping
 from typing import Optional
 from typing import Tuple
@@ -23,6 +26,7 @@ class Request:
         raise_on_failure: bool = False,
         retryable: Optional[Tuple[int, Type[BaseException]]] = None,
         headers: Optional[Mapping[str, str]] = None,
+        hooks: Optional[List[Callable[[Any], Any]]] = None,
     ) -> None:
         self.url: str = self.url if not query_params else self._build_url(
             url, query_params
@@ -32,6 +36,7 @@ class Request:
         self.raise_on_failure = raise_on_failure
         self.retryable = retryable
         self.headers = headers
+        self.hooks = hooks
 
     @staticmethod
     def _build_url(url: str, qs_params: Mapping[str, str]) -> str:
