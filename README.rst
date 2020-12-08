@@ -23,7 +23,7 @@ Restpite
     from restpite import Request
     from models import Car
 
-    def test_get_car(client_side_car) -> None:
+    def test_get_car(client_side_car, constants_provider) -> None:
         assert_that(
             Request(
                 url="http://www.traffic.com/cars/",
@@ -36,4 +36,4 @@ Restpite
             )
             .fire()
             .status_code_is(200)
-            .deserialize(Car).make).is_equal_to("Audi")
+            .deserialize(Car).make).is_equal_to(constants_provider.AUDI)
