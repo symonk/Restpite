@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Mapping
 from typing import Optional
+from typing import Tuple
+from typing import Type
 from urllib.parse import urlencode
 
 from restpite import RestpiteConfig
@@ -13,52 +15,32 @@ class Session:
 
 class Request:
     def __init__(
-        self, url: str, method: str = "get", config: Optional[RestpiteConfig] = None
+        self,
+        url: str,
+        query_params: Optional[Mapping[str, str]] = None,
+        method: str = "get",
+        config: Optional[RestpiteConfig] = None,
+        raise_on_failure: bool = False,
+        retryable: Optional[Tuple[int, Type[BaseException]]] = None,
+        headers: Optional[Mapping[str, str]] = None,
     ) -> None:
-        self.url = url
-        self.qs_params: Optional[Mapping[str, str]] = None
-        self.headers: Optional[Mapping[str, str]] = None
-        self.method = method.lower()
-        self.request = None
+        self.url: str = self.url if not query_params else self._build_url(
+            url, query_params
+        )
+        self.method = method
         self.config = config
-        self._raise_on_failure = False
-        self.retries = 0
+        self.raise_on_failure = raise_on_failure
+        self.retryable = retryable
+        self.headers = headers
 
-    def _build_url(self, qs_params: Mapping[str, str]) -> str:
+    @staticmethod
+    def _build_url(url: str, qs_params: Mapping[str, str]) -> str:
         """
         Encode query string params dictionary and append it to the URL.
         :param qs_params: Dictionary of k:v pairs to url encode and append to the url.
         :returns: Resolved url including query string params.
         """
-        return self.url if not qs_params else f"{self.url}?{urlencode(qs_params)}"
-
-    def raise_on_failure(self) -> Request:
-        self._raise_on_failure = True
-        return self
-
-    def retry(self, times: int = 0) -> Request:
-        self.retries = times
-        return self
-
-    def with_query_params(self, qs_params: Mapping[str, str]) -> Request:
-        """
-        Append query string params to the When request object.
-        Resolve the url correctly given the data provided for the query string.
-        :param qs_params: Dictionary of k:v pairs to url encode and append to the url.
-        :returns: The (self) when request object for fluency.
-        """
-        self.qs_params = qs_params
-        self.url = self._build_url(qs_params)
-        return self
-
-    def with_headers(self, headers: Mapping[str, str]) -> Request:
-        """
-        Append the given headers dictionary into the request headers.
-        :param headers: Key:Value map object of headers.
-        :returns: The (self) when request object for fluency.
-        """
-        self.headers = headers
-        return self
+        return url if not qs_params else f"{url}?{urlencode(qs_params)}"
 
     def get(self) -> Request:
         """
@@ -109,7 +91,7 @@ class Request:
         self.method = "delete"
         return self
 
-    def send(self) -> Response:
+    def fire(self) -> Response:
         # Fire the request, grab the response!
         # Build a Response/Then instance
         return Response()

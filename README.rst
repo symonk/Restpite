@@ -24,10 +24,12 @@ Restpite
 
     def test_the_post(user_fixture) -> None:
         assert_that(
-            Request(url="http://www.google.com")
-            .raise_on_failure()
-            .retry(5)
-            .with_query_params(example_params)
-            .send()
+            Request(
+                url="http://www.google.com",
+                query_params=example_params,
+                raise_on_failure=True,
+                retryable=(5, RequestException),
+            )
+            .fire()
             .status_code
         ).is_equal_to(200)
