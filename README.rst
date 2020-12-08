@@ -26,8 +26,8 @@ Restpite
     def test_get_car(client_side_car, constants_provider) -> None:
         assert_that(
             Request(
-                url="http://www.traffic.com/cars/",
-                query_params=example_params,
+                url="http://www.traffic.com/cars",
+                query_params={'make': 'Audi', 'model': 'A4'},
                 raise_on_failure=True,
                 retryable=(5, RequestException),
                 connect_timeout=30,
