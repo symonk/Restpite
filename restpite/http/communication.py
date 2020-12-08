@@ -21,7 +21,6 @@ class Request:
         self,
         url: str,
         query_params: Optional[Mapping[str, str]] = None,
-        method: str = "get",
         config: Optional[RestpiteConfig] = None,
         raise_on_failure: bool = False,
         retryable: Optional[Tuple[int, Type[BaseException]]] = None,
@@ -33,7 +32,6 @@ class Request:
         self.url: str = self.url if not query_params else self._build_url(
             url, query_params
         )
-        self.method = method
         self.config = config
         self.raise_on_failure = raise_on_failure
         self.retryable = retryable
@@ -50,58 +48,49 @@ class Request:
         """
         return url if not qs_params else f"{url}?{urlencode(qs_params)}"
 
-    def get(self) -> Request:
+    def get(self) -> Response:
         """
         Configure the request method to HTTP GET
         """
-        self.method = "get"
-        return self
+        return self._dispatch("get")
 
-    def options(self) -> Request:
+    def options(self) -> Response:
         """
         Configure the request method to HTTP OPTIONS
         """
-        self.method = "options"
-        return self
+        return self._dispatch("options")
 
-    def head(self) -> Request:
+    def head(self) -> Response:
         """
         Configure the request method to HTTP HEAD
         """
-        self.method = "head"
-        return self
+        return self._dispatch("head")
 
-    def post(self) -> Request:
+    def post(self) -> Response:
         """
         Configure the request method to HTTP POST
         """
-        self.method = "post"
-        return self
+        return self._dispatch("post")
 
-    def put(self) -> Request:
+    def put(self) -> Response:
         """
         Configure the request method to HTTP PUT
         """
-        self.method = "put"
-        return self
+        return self._dispatch("put")
 
-    def patch(self) -> Request:
+    def patch(self) -> Response:
         """
         Configure the request method to HTTP PATCH
         """
-        self.method = "patch"
-        return self
+        return self._dispatch("patch")
 
-    def delete(self) -> Request:
+    def delete(self) -> Response:
         """
         Configure the request method to HTTP DELETE
         """
-        self.method = "delete"
-        return self
+        return self._dispatch("delete")
 
-    def fire(self) -> Response:
-        # Fire the request, grab the response!
-        # Build a Response/Then instance
+    def _dispatch(self, method: str = "get") -> Response:
         return Response()
 
 

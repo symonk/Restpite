@@ -34,6 +34,6 @@ Restpite
                 read_timeout=15,
                 hooks=[lambda x: print(x.json())]
             )
-            .fire()
+            .get()
             .status_code_is(200)
             .deserialize(Car).make).is_equal_to(constants_provider.AUDI)

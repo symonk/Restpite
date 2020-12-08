@@ -13,6 +13,6 @@ def test_query_string_params() -> None:
             raise_on_failure=True,
             retryable=(5, RequestException),
         )
-        .fire()
+        .get()
         .status_code
     ).is_equal_to(200)
