@@ -6,5 +6,5 @@ Sphinx==3.3.1
 sphinx_rtd_theme==0.5.0
 tox==3.20.1
 twine==3.2.0
-watchdog==0.10.4
+watchdog==1.0.1
 wheel==0.36.1
