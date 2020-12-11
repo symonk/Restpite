@@ -9,11 +9,24 @@ from typing import Tuple
 from typing import Type
 from urllib.parse import urlencode
 
+from requests import Session
+
 from restpite import RestpiteConfig
 
 
-class Session:
-    ...
+class RestpiteSession:
+    def __init__(self, retryable: Optional[Tuple[int, Type[BaseException]]] = None):
+        self._session: Session = Session()
+        if retryable:
+            attempts, exc = retryable
+            for adapter in self._session.adapters:
+                adapter.max_retries = attempts
+
+    def __enter__(self) -> RestpiteSession:
+        return self
+
+    def __exit__(self) -> None:
+        self._session.close()
 
 
 class Request:
@@ -90,7 +103,8 @@ class Request:
         """
         return self._dispatch("delete")
 
-    def _dispatch(self, method: str = "get") -> Response:
+    @staticmethod
+    def _dispatch(method: str = "get") -> Response:
         return Response()
 
 

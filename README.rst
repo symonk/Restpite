@@ -37,3 +37,9 @@ Restpite
             .get()
             .status_code_is(200)
             .deserialize(Car).make).is_equal_to(constants_provider.AUDI)
+
+----
+
+## Features of restpite:
+
+ -
