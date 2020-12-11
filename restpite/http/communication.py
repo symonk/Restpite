@@ -10,17 +10,24 @@ from typing import Type
 from urllib.parse import urlencode
 
 from requests import Session
+from requests.adapters import HTTPAdapter
+from urllib3 import Retry
 
 from restpite import RestpiteConfig
 
 
 class RestpiteSession:
-    def __init__(self, retryable: Optional[Tuple[int, Type[BaseException]]] = None):
+    def __init__(
+        self, retry: Optional[Tuple[int, float, List[int], Type[BaseException]]] = None
+    ):
         self._session: Session = Session()
-        if retryable:
-            attempts, exc = retryable
-            for adapter in self._session.adapters:
-                adapter.max_retries = attempts
+        if retry:
+            total, backoff, statuses, exc = retry
+            retries = Retry(
+                total=total, backoff_factor=backoff, status_forcelist=statuses
+            )
+            self._session.mount("http://", HTTPAdapter(max_retries=retries))
+            self._session.mount("https://", HTTPAdapter(max_retries=retries))
 
     def get(self, url, **kwargs):
         self._session.get(url, **kwargs)
