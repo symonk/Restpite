@@ -22,10 +22,13 @@ class RestpiteSession:
             for adapter in self._session.adapters:
                 adapter.max_retries = attempts
 
+    def get(self, url, **kwargs):
+        self._session.get(url, **kwargs)
+
     def __enter__(self) -> RestpiteSession:
         return self
 
-    def __exit__(self) -> None:
+    def __exit__(self, *args) -> None:
         self._session.close()
 
 

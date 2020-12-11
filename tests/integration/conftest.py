@@ -1,6 +1,7 @@
 import pytest
 
 
-@pytest.fixture(scope="session", autouse=True)
-def local_http_server():
-    ...
+@pytest.fixture(scope="function")
+def local_http_server(httpserver):
+    # Gain more control around this fixture later
+    yield httpserver

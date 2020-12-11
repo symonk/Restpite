@@ -6,6 +6,7 @@ __version__ = "0.1.1"
 
 
 from .configuration.config import RestpiteConfig
+from .http.communication import RestpiteSession
 from .http.communication import Request
 from .http.communication import Response
 from .hooks import post_receive
@@ -15,6 +16,7 @@ from .hooks import pre_send
 
 __all__ = [
     "RestpiteConfig",
+    "RestpiteSession",
     "Request",
     "Response",
     "pre_send",
