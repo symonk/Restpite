@@ -2,7 +2,7 @@ language: python
 python:
 - 3.8
 install:
-  - python -mpip install --progress-bar=off tox -rrequirements_dev.txt
+  - pip install -U tox-travis
   - virtualenv --version
   - easy_install --version
   - pip --version
