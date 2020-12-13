@@ -1,5 +1,5 @@
 ========
-Restpite
+restpite
 ========
 
 
@@ -18,12 +18,18 @@ Restpite
      :target: https://pyup.io/account/repos/github/symonk/restpite/
      :alt: Updates
 
+
+.. image:: https://codecov.io/gh/symonk/restpite/branch/master/graph/badge.svg?token=E7SVA868NR
+    :target: https://codecov.io/gh/symonk/restpite
+
+
+
 .. code-block:: python
 
     from restpite import Request
     from models import Car
 
-    def test_get_car(client_side_car, constants_provider) -> None:
+    def test_get_car(constants_provider) -> None:
         assert_that(
             Request(
                 url="http://www.traffic.com/cars",
