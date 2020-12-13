@@ -1,6 +1,8 @@
 language: python
+
 python:
 - 3.8
+-
 install:
   - python -mpip install --progress-bar=off tox -rrequirements_dev.txt
   - virtualenv --version
@@ -13,7 +15,9 @@ script: tox -v
 after_failure:
   - more .tox/log/* | cat
   - more .tox/*/log/* | cat
+  -
 after_success:
   - codecov
+  -
 notifications:
   email: false
