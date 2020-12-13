@@ -6,7 +6,7 @@ Restpite
 .. image:: https://img.shields.io/pypi/v/restpite.svg
         :target: https://pypi.python.org/pypi/restpite
 
-.. image:: https://travis-ci.com/symonk/Restpite.svg?branch=master
+.. image:: https://travis-ci.com/symonk/restpite.svg?branch=master
         :target: https://travis-ci.com/symonk/restpite
 
 .. image:: https://readthedocs.org/projects/restpite/badge/?version=latest
@@ -14,8 +14,8 @@ Restpite
         :alt: Documentation Status
 
 
-.. image:: https://pyup.io/repos/github/symonk/Restpite/shield.svg
-     :target: https://pyup.io/account/repos/github/symonk/Restpite/
+.. image:: https://pyup.io/repos/github/symonk/restpite/shield.svg
+     :target: https://pyup.io/account/repos/github/symonk/restpite/
      :alt: Updates
 
 .. code-block:: python
