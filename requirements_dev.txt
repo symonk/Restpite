@@ -1,5 +1,6 @@
 assertpy==1.1
 coverage==5.3
+coverage==5.3
 pip==20.3.1
 pytest==6.2.0
 pytest-cov==2.10.1
