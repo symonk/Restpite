@@ -3,6 +3,7 @@ python:
 - 3.8
 install:
   - pip install -U tox-travis
+  - pip install -r requirements_dev.txt
   - virtualenv --version
   - easy_install --version
   - pip --version
