@@ -1,5 +1,19 @@
 language: python
 python:
 - 3.8
-install: pip install -U tox-travis
-script: tox
+install:
+  - python -mpip install --progress-bar=off tox -rrequirements_dev.txt
+  - virtualenv --version
+  - easy_install --version
+  - pip --version
+  - tox --version
+  -
+script: tox -v
+
+after_failure:
+  - more .tox/log/* | cat
+  - more .tox/*/log/* | cat
+after_success:
+  - codecov
+notifications:
+  email: false
