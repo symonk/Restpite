@@ -1,6 +1,16 @@
 language: python
-python:
-- 3.8
+dist: xenial
+cache: false
+env:
+  global:
+    - LD_PRELOAD=/lib/x86_64-linux-gnu/libSegFault.so
+    - SEGFAULT_SIGNALS=all
+    - LANG=en_US.UTF-8
+matrix:
+  include:
+    - env:
+        - TOXENV=py38,codecov
+      python: '3.8'
 install:
   - pip install -U tox-travis
   - pip install -r requirements_dev.txt
