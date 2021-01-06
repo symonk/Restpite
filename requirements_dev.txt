@@ -6,7 +6,7 @@ pytest==6.2.1
 pytest-cov==2.10.1
 pytest-httpserver==0.3.6
 Sphinx==3.4.2
-sphinx_rtd_theme==0.5.0
+sphinx_rtd_theme==0.5.1
 tox==3.20.1
 twine==3.3.0
 watchdog==1.0.2
