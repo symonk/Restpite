@@ -5,7 +5,6 @@ __email__ = "jackofspaces@gmail.com"
 __version__ = "0.1.1"
 
 
-from .configuration.config import Configuration
 from .http.session import HttpSession
 from .http.request import Request
 from .http.response import Response
@@ -15,7 +14,6 @@ from .hooks import pre_receive
 from .hooks import pre_send
 
 __all__ = [
-    "Configuration",
     "HttpSession",
     "Request",
     "Response",
