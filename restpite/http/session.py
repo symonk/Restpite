@@ -1,8 +1,14 @@
+from __future__ import annotations
+
 from typing import Optional
 
-from ..configuration.config import Configuration
+from requests import Session
+
+from restpite.http.headers import IHeader
 
 
-class Session:
-    def __init__(self, session_configuration: Optional[Configuration] = None) -> None:
-        self.session_configuration = session_configuration or Configuration()
+class HttpSession(Session):
+    def __init__(self, headers: Optional[IHeader] = None):
+        super().__init__()
+        if headers:
+            self.headers = headers.resolve_headers(self.headers)

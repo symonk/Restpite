@@ -6,7 +6,7 @@ __version__ = "0.1.1"
 
 
 from .configuration.config import Configuration
-from .http.session import Session
+from .http.session import HttpSession
 from .http.request import Request
 from .http.response import Response
 from .hooks import post_receive
@@ -16,7 +16,7 @@ from .hooks import pre_send
 
 __all__ = [
     "Configuration",
-    "Session",
+    "HttpSession",
     "Request",
     "Response",
     "pre_send",
