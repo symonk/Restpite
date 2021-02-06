@@ -4,7 +4,7 @@ coverage==5.4
 pip==21.0.1
 pytest==6.2.2
 pytest-cov==2.11.1
-pytest-httpserver==0.3.6
+pytest-httpserver==0.3.7
 Sphinx==3.4.3
 sphinx_rtd_theme==0.5.1
 tox==3.21.3
