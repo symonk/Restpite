@@ -1,9 +1,13 @@
-import random
-from string import ascii_lowercase
-
 import pytest
+
+from tests.data_providers import data_service
 
 
 @pytest.fixture
-def randomised_dict():
-    return {random.choice(ascii_lowercase): random.choice(range(100)) for _ in range(5)}
+def random_headers_dict(data_provider):
+    yield data_provider.lower_case_headers_of_len()
+
+
+@pytest.fixture
+def data_provider():
+    yield data_service

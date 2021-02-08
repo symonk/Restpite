@@ -49,3 +49,7 @@ class HttpSession(Session):
             headers.resolve_headers(self.headers) if headers else self.headers
         )
         return self
+
+    def get(self, *args, **kwargs):
+        kwargs["headers"] = self.headers
+        return super().get(*args, **kwargs)
