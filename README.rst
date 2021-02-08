@@ -45,3 +45,7 @@ Restpite
             .deserialize(Car).make).is_equal_to(constants_provider.AUDI)
 
 ----
+
+# Contributing to restpite
+
+ -
