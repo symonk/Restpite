@@ -26,22 +26,29 @@ Restpite
 
 .. code-block:: python
 
-    from restpite import Request
-    from models import Car
+    from restpite import HttpGet
+    from restpite import Model
+    from listeners import MyListener
+
+    class Car(Model):
+        colour: str
+        make: str
+        model: str
+        engine: float
+
 
     def test_get_car(constants_provider) -> None:
         assert_that(
-            Request(
+            HttpGet(
                 url="http://www.traffic.com/cars",
                 query_params={'make': 'Audi', 'model': 'A4'},
                 raise_on_failure=True,
                 retryable=(5, RequestException),
                 connect_timeout=30,
                 read_timeout=15,
-                hooks=[lambda x: print(x.json())]
+                listeners=MyListener()
             )
-            .get()
-            .status_code_is(200)
-            .deserialize(Car).make).is_equal_to(constants_provider.AUDI)
+            .assert_was_ok()
+            .deserialize(Car)).is_instance(Car)
 
 ----

@@ -1,5 +1,5 @@
+from restpite import HttpResponse
 from restpite import Request
-from restpite import Response
 
 
 def pre_send(request: Request):
@@ -10,9 +10,9 @@ def post_send(request: Request):
     pass
 
 
-def pre_receive(response: Response):
+def pre_receive(response: HttpResponse):
     pass
 
 
-def post_receive(response: Response):
+def post_receive(response: HttpResponse):
     pass
