@@ -22,11 +22,12 @@ Restpite
 .. image:: https://codecov.io/gh/symonk/restpite/branch/master/graph/badge.svg?token=E7SVA868NR
     :target: https://codecov.io/gh/symonk/restpite
 
+----
 
 Restpite is a simple python HTTP DSL for testing restful services, the easy way.  It sits on top of the
 brilliant python `requests` library but provides some test friendly improvements.  Restpite aims to be
 a great library for not only testing, but for standalone scripts and libraries that want functionality
-such as continuity using things like Restpites `Retry` capabilities out of the box without having to
+such as continuity using things like Restpite's `Retry` capabilities out of the box without having to
 roll their own adapters / interact with `urllib` directly.  Restpite offers:
 
   - Powerful deserialization to user defined models
@@ -37,6 +38,9 @@ roll their own adapters / interact with `urllib` directly.  Restpite offers:
   - Similarity to `requests` syntax to speed up the development process
   - (Coming later) BDD syntax support such as `Given()`, `When()` and `Then()`
 
+----
+
+A simple example:
 
 .. code-block:: python
 
