@@ -1,4 +1,5 @@
 import pytest
+import requests
 
 from tests.data_providers import data_service
 
@@ -11,3 +12,8 @@ def random_headers_dict(data_provider):
 @pytest.fixture
 def data_provider():
     yield data_service
+
+
+@pytest.fixture
+def request_default_headers():
+    return requests.utils.default_headers()

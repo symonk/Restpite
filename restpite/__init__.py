@@ -12,6 +12,10 @@ from .hooks import post_receive
 from .hooks import post_send
 from .hooks import pre_receive
 from .hooks import pre_send
+import logging
+
+log = logging.getLogger(__name__)
+log.addHandler(logging.NullHandler())
 
 __all__ = [
     "HttpSession",
