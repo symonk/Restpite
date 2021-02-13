@@ -27,15 +27,15 @@ Restpite is a simple python HTTP DSL for testing restful services, the easy way.
 brilliant python `requests` library but provides some test friendly improvements.  Restpite aims to be
 a great library for not only testing, but for standalone scripts and libraries that want functionality
 such as continuity using things like Restpites `Retry` capabilities out of the box without having to
-roll their own adapters / interact with `urllib` directly.
+roll their own adapters / interact with `urllib` directly.  Restpite offers:
 
- - Powerful deserialization to user defined models
- - Abundance of custom adapters for use in standalone scripts and libraries not test relatable
- - Built in assertion and chaining functionality to the `HttpResponse` objects
- - Powerful hooking system to implement custom behaviour around all HTTP traffic
- - Fluent, english readable DSL
- - Similarity to `requests` syntax to speed up the development process
- - (Coming later) BDD syntax support such as `Given()`, `When()` and `Then()`
+  - Powerful deserialization to user defined models
+  - Abundance of custom adapters for use in standalone scripts and libraries not test relatable
+  - Built in assertion and chaining functionality to the `HttpResponse` objects
+  - Powerful hooking system to implement custom behaviour around all HTTP traffic
+  - Fluent, english readable DSL
+  - Similarity to `requests` syntax to speed up the development process
+  - (Coming later) BDD syntax support such as `Given()`, `When()` and `Then()`
 
 
 .. code-block:: python
