@@ -26,6 +26,14 @@ class HttpResponse:
     def deserialize(self, model: Type[Any]) -> Any:
         return model(**self.wrapped_response.json())
 
+    def assert_contained_header(self, header_name: str) -> HttpResponse:
+        assert_that(header_name).is_in(self.headers)
+        return self
+
+    def assert_value_was(self, header: str, expected_value: str) -> HttpResponse:
+        assert_that(self.headers.get(header)).is_equal_to(expected_value)
+        return self
+
     def assert_was_ok(self) -> HttpResponse:
         assert_that(self.status_code).is_equal_to(status_codes.ok)
         return self
