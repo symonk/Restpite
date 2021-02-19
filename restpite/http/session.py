@@ -66,7 +66,7 @@ class HttpSession:
         """
         self._execute_listeners_command("before_send_request", *args, **kwargs)
         try:
-            response = getattr(self.session, method)(*args, **kwargs)
+            response = self.session.request(method, *args, **kwargs)
             assert isinstance(response, Response)
             self._execute_listeners_command("after_retrieve_response", response)
             return response
