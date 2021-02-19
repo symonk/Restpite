@@ -6,7 +6,7 @@ pydantic==1.7.3
 pytest==6.2.2
 pytest-cov==2.11.1
 pytest-httpserver==0.3.7
-Sphinx==3.5.0
+Sphinx==3.5.1
 sphinx_rtd_theme==0.5.1
 tox==3.21.4
 twine==3.3.0
