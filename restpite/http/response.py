@@ -39,23 +39,23 @@ class HttpResponse:
         return self
 
     def assert_informative(self) -> HttpResponse:
-        assert_that(self.status_code).starts_with(1)
+        assert_that(self.status_code).is_between(100, 199)
         return self
 
     def assert_success(self) -> HttpResponse:
-        assert_that(self.status_code).starts_with(2)
+        assert_that(self.status_code).is_between(200, 299)
         return self
 
     def assert_redirect(self) -> HttpResponse:
-        assert_that(self.status_code).starts_with(3)
+        assert_that(self.status_code).is_between(300, 399)
         return self
 
     def assert_client_error(self) -> HttpResponse:
-        assert_that(self.status_code).starts_with(4)
+        assert_that(self.status_code).is_between(400, 499)
         return self
 
     def assert_server_error(self) -> HttpResponse:
-        assert_that(self.status_code).starts_with(5)
+        assert_that(self.status_code).is_between(500, 599)
         return self
 
     def assert_was_forbidden(self) -> HttpResponse:
