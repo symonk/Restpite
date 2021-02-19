@@ -30,6 +30,26 @@ class HttpResponse:
         assert_that(self.status_code).is_equal_to(status_codes.ok)
         return self
 
+    def assert_success(self) -> HttpResponse:
+        assert_that(self.status_code).starts_with(2)
+        return self
+
+    def assert_informative(self) -> HttpResponse:
+        assert_that(self.status_code).starts_with(1)
+        return self
+
+    def assert_redirect(self) -> HttpResponse:
+        assert_that(self.status_code).starts_with(3)
+        return self
+
+    def assert_client_error(self) -> HttpResponse:
+        assert_that(self.status_code).starts_with(4)
+        return self
+
+    def assert_server_error(self) -> HttpResponse:
+        assert_that(self.status_code).starts_with(5)
+        return self
+
     def assert_was_forbidden(self) -> HttpResponse:
         assert_that(self.status_code).is_equal_to(status_codes.forbidden)
         return self
