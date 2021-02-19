@@ -30,12 +30,12 @@ class HttpResponse:
         assert_that(self.status_code).is_equal_to(status_codes.ok)
         return self
 
-    def assert_success(self) -> HttpResponse:
-        assert_that(self.status_code).starts_with(2)
-        return self
-
     def assert_informative(self) -> HttpResponse:
         assert_that(self.status_code).starts_with(1)
+        return self
+
+    def assert_success(self) -> HttpResponse:
+        assert_that(self.status_code).starts_with(2)
         return self
 
     def assert_redirect(self) -> HttpResponse:
