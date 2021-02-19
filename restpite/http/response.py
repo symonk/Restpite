@@ -68,3 +68,10 @@ class HttpResponse:
 
     def json(self) -> Any:
         return self.wrapped_response.json()
+
+    def __bool__(self) -> bool:
+        """
+        Permits truth checks on the HTTPResponse object, where it is considered
+        True when the response was a successful response
+        """
+        return self.wrapped_response.ok
