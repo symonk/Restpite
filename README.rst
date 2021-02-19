@@ -45,10 +45,11 @@ A simple example:
 .. code-block:: python
 
     from restpite import HttpGet
-    from restpite import Model
+    from restpite import dataclass
     from listeners import MyListener
 
-    class Car(Model):
+    @dataclass
+    class Car:
         colour: str
         make: str
         model: str

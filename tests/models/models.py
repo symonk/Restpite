@@ -1,7 +1,8 @@
-from pydantic import BaseModel
+from marshmallow_dataclass import dataclass
 
 
-class Car(BaseModel):
+@dataclass
+class Car:
     colour: str
     brand: str
     engine: int
