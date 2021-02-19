@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import logging
+from types import TracebackType
 from typing import Any
 from typing import AnyStr
 from typing import Callable
 from typing import Iterable
 from typing import MutableMapping
 from typing import Optional
+from typing import Type
 
 from requests import Session
 
@@ -27,8 +29,6 @@ class HttpSession:
     of the given session.
     """
 
-    # TODO: Convert to composition
-
     def __init__(
         self,
         headers: Optional[MutableMapping[str, str]] = None,
@@ -48,7 +48,7 @@ class HttpSession:
         self.verify = verify
         self.stream = stream
         if headers:
-            self.session.headers.update(**headers)
+            self.headers.update(**headers)
         self._register_adapters(adapters)
 
     @property
@@ -65,12 +65,16 @@ class HttpSession:
             self.session.mount(*adapter)
         return self
 
-    def get(self, url: AnyStr, **kwargs) -> HttpResponse:
+    def http_get(self, url: AnyStr, **kwargs) -> HttpResponse:
         return HttpResponse(self.session.get(url, **kwargs))
 
-    def __enter__(self):
-        self.session.__enter__()
+    def __enter__(self) -> HttpSession:
         return self
 
-    def __exit__(self, *args, **kwargs):
-        self.session.__exit__(*args)
+    def __exit__(
+        self,
+        exc_type: Optional[Type[BaseException]] = None,
+        exc_value: Optional[BaseException] = None,
+        traceback: Optional[TracebackType] = None,
+    ) -> None:
+        self.session.close()

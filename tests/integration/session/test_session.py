@@ -13,5 +13,5 @@ def test_simple_session(local_http_server, random_headers_dict) -> None:
     )
     local_http_server.expect_request("/test").respond_with_handler(call_back)
     with HttpSession(headers=random_headers_dict) as session:
-        response = session.get(f"http://localhost:{local_http_server.port}/test")
+        response = session.http_get(f"http://localhost:{local_http_server.port}/test")
         assert_that(random_headers_dict).is_subset_of(response.headers)

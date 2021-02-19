@@ -11,6 +11,8 @@ def test_response_assert_ok(local_http_server) -> None:
         {"colour": "red", "brand": "bmw", "engine": 3200}, status=codes.ok
     )
     with HttpSession() as session:
-        response = session.get(f"http://localhost:{local_http_server.port}/cars/bmw")
+        response = session.http_get(
+            f"http://localhost:{local_http_server.port}/cars/bmw"
+        )
         response.assert_was_ok()
         assert_that(response.deserialize(Car)).is_instance_of(Car)
