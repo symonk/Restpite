@@ -8,8 +8,11 @@ from typing import Callable
 from typing import Iterable
 from typing import MutableMapping
 from typing import Optional
+from typing import Sequence
 from typing import Type
 
+from requests import RequestException
+from requests import Response
 from requests import Session
 
 from restpite.http.adapters import Mountable
@@ -34,7 +37,7 @@ class HttpSession:
         headers: Optional[MutableMapping[str, str]] = None,
         connection_timeout: float = 30.00,
         read_timeout: float = 15.00,
-        listener: Optional[AbstractHttpListener] = None,
+        listeners: Optional[Sequence[AbstractHttpListener]] = None,
         adapters: Optional[Iterable[Mountable]] = None,
         hooks: Optional[Iterable[Callable[[Any], Any]]] = None,
         verify: bool = True,
@@ -43,7 +46,7 @@ class HttpSession:
         self.session = Session()
         self.connection_timeout = connection_timeout
         self.read_timeout = read_timeout
-        self.listener = listener
+        self.listeners = listeners or []
         self.hooks = hooks
         self.verify = verify
         self.stream = stream
@@ -55,8 +58,25 @@ class HttpSession:
     def headers(self):
         return self.session.headers
 
-    def _dispatch(self) -> HttpResponse:
-        ...
+    def _dispatch(self, method: str, *args, **kwargs) -> Response:
+        """
+        Routes the HTTPSessions calls through requests directory, permitting the
+        invocation of user defined listeners before and after requesting.  Listener
+        calls are executed in FIFO order
+        """
+        self._execute_listeners_command("before_send_request", *args, **kwargs)
+        try:
+            response = getattr(self.session, method)(*args, **kwargs)
+            assert isinstance(response, Response)
+            self._execute_listeners_command("after_retrieve_response", response)
+            return response
+        except RequestException:
+            self._execute_listeners_command("on_request_exception")
+            raise
+
+    def _execute_listeners_command(self, func_name: str, *args, **kwargs) -> None:
+        for listener in self.listeners:
+            getattr(listener, func_name)(*args, **kwargs)
 
     def _register_adapters(
         self, adapters: Optional[Iterable[Mountable]]
@@ -66,7 +86,7 @@ class HttpSession:
         return self
 
     def http_get(self, url: AnyStr, **kwargs) -> HttpResponse:
-        return HttpResponse(self.session.get(url, **kwargs))
+        return HttpResponse(self._dispatch("get", url, **kwargs))
 
     def __enter__(self) -> HttpSession:
         return self
