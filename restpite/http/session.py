@@ -6,6 +6,7 @@ from typing import Any
 from typing import AnyStr
 from typing import Callable
 from typing import Iterable
+from typing import Mapping
 from typing import MutableMapping
 from typing import Optional
 from typing import Sequence
@@ -38,8 +39,9 @@ class HttpSession:
         connection_timeout: float = 30.00,
         read_timeout: float = 15.00,
         listeners: Optional[Sequence[AbstractHttpListener]] = None,
-        adapters: Optional[Iterable[Mountable]] = None,
+        adapters: Optional[Iterable[Any]] = None,
         hooks: Optional[Iterable[Callable[[Any], Any]]] = None,
+        qstring_params: Optional[Mapping[str, str]] = None,
         verify: bool = True,
         stream: bool = False,
     ):
@@ -50,6 +52,7 @@ class HttpSession:
         self.hooks = hooks
         self.verify = verify
         self.stream = stream
+        self.query_string_params = qstring_params
         if headers:
             self.headers.update(**headers)
         self._register_adapters(adapters)
