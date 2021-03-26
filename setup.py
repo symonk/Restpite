@@ -1,4 +1,4 @@
-#!/usr/bin/env python
-from setuptools import setup
+import setuptools
 
-setup()
+# This is necessary to support editable installs with pip
+setuptools.setup()
