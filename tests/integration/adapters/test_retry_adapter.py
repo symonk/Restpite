@@ -1,8 +1,8 @@
 import pytest
 from requests.exceptions import RetryError
 
-from restpite.http.adapters import RetryAdapter
 from restpite.http.session import HttpSession
+from restpite.other.adapters import RetryAdapter
 
 
 def test_retryable_get(local_http_server):

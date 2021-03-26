@@ -5,12 +5,12 @@ __email__ = "jackofspaces@gmail.com"
 __version__ = "0.1.1"
 
 
-from .http.session import HttpSession
-from .http.request import Request
-from .http.response import HttpResponse
+from restpite.http.session import RestpiteSession
+from restpite.http.request import Request
+from restpite.http.response import HttpResponse
 import logging
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
-__all__ = ["HttpSession", "Request", "HttpResponse"]
+__all__ = ["RestpiteSession", "Request", "HttpResponse"]

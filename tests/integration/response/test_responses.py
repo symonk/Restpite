@@ -1,7 +1,7 @@
 from assertpy import assert_that
 from requests import codes
 
-from restpite import HttpSession
+from restpite import RestpiteSession
 
 from tests.models.models import Car
 
@@ -10,7 +10,7 @@ def test_response_assert_ok(local_http_server) -> None:
     local_http_server.expect_request("/cars/bmw").respond_with_json(
         {"colour": "red", "brand": "bmw", "engine": 3200}, status=codes.ok
     )
-    with HttpSession() as session:
+    with RestpiteSession() as session:
         response = session.http_get(
             f"http://localhost:{local_http_server.port}/cars/bmw"
         )
