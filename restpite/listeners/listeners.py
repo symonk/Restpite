@@ -1,11 +1,11 @@
 import logging
 
-from .interface import AbstractHttpListener
+from .listener_protocols import RestpiteListener
 
 log = logging.getLogger(__name__)
 
 
-class LoggingListener(AbstractHttpListener):
+class LoggingListener(RestpiteListener):
     """
     A simple logging listener that writes logging information.
     """

@@ -2,7 +2,7 @@ import pytest
 import requests
 
 from restpite import HttpResponse
-from restpite.listeners.interface import AbstractHttpListener
+from restpite.listeners.interface import RestpiteListener
 
 from tests.data_providers import data_service
 
@@ -24,7 +24,7 @@ def request_default_headers():
 
 @pytest.fixture
 def sys_out_listener():
-    class SysOutListener(AbstractHttpListener):
+    class SysOutListener(RestpiteListener):
         def before_sending_request(self, *args, **kwargs) -> None:
             print(*args, **kwargs)
 
