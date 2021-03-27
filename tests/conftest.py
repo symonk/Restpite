@@ -2,7 +2,7 @@ import pytest
 import requests
 
 from restpite import HttpResponse
-from restpite.listeners.interface import RestpiteListener
+from restpite.listeners.listener_protocols import RestpiteListener
 
 from tests.data_providers import data_service
 

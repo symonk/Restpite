@@ -4,6 +4,7 @@ import logging
 import typing
 
 import requests
+from requests.auth import AuthBase
 
 from restpite.__version__ import __version__
 from restpite.http import http_protocols
@@ -50,6 +51,9 @@ class RestpiteSession:
     and https respectively.
     :param user_agent: The User Agent string added to subsequent request headers, if omitted restpite will
     replace the user-agent header with its own using `restpite-{restpite-version}`.
+    :param authentication: Callable for a custom authentication to pass to requests.  Subclassing
+    `requests.auth.Authbase`
+    is advisable here.  Restpite also provides some implementations out of the box
     """
 
     def __init__(
@@ -70,6 +74,13 @@ class RestpiteSession:
             typing.List[http_protocols.Mountable]
         ] = None,
         user_agent: typing.Optional[str] = None,
+        authentication: typing.Optional[
+            typing.Union[
+                typing.Tuple[str, str],
+                AuthBase,
+                typing.Callable[[requests.Request], requests.Request],
+            ]
+        ] = None,
     ) -> None:
         self.headers = additional_headers or {}
         if user_agent:
@@ -83,6 +94,7 @@ class RestpiteSession:
         self.ssl_verification = ssl_verification
         self.maximum_redirects_limit = maximum_redirects_limit
         self.transport_adapters = transport_adapters or []
+        self.authentication = authentication
         self.session = self._prepare_session()
 
     def __getattr__(self, item: str) -> typing.Any:
@@ -107,12 +119,10 @@ class RestpiteSession:
         session.max_redirects = self.maximum_redirects_limit
         session.params = self.query_strings
         session.headers.update(self.headers)
+        session.auth = self.authentication
         # TODO: Finish session delegation
-        # TODO: Missing (auth, proxies, hooks, cert, trust_env, cookies, adapters)
+        # TODO: Missing (proxies, hooks, cert, trust_env, cookies, adapters)
         return session
-
-    def _default_headers(self) -> typing.Dict[str, str]:
-        ...
 
     def __enter__(self) -> RestpiteSession:
         # TODO: How do we make this work with the wrapped session?
