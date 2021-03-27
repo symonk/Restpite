@@ -29,7 +29,7 @@ Restpite
 ----
 
 Restpite is a simple python HTTP DSL for testing restful services, the easy way.  It sits on top of the
-brilliant python `requests` library but provides some test friendly improvements.  Restpite aims to be
+python `requests` library but provides some test friendly improvements.  Restpite aims to be
 a great library for not only testing, but for standalone scripts and libraries that want functionality
 such as continuity using things like Restpite's `Retry` capabilities out of the box without having to
 roll their own adapters / interact with `urllib` directly.  Restpite offers:

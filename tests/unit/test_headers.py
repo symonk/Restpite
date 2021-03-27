@@ -5,7 +5,7 @@ from restpite import RestpiteSession
 
 def test_additional_headers(random_headers_dict) -> None:
     assert_that(
-        RestpiteSession(headers=random_headers_dict).headers.items()
+        RestpiteSession(additional_headers=random_headers_dict).headers.items()
         < random_headers_dict.items()
     )
 
