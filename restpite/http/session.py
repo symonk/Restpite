@@ -216,7 +216,7 @@ class RestpiteSession:
         :param method: the method name (str) to be invoked
         :param *args: Arbitrary arguments for the listener function
         """
-        for listener in self.listeners:
+        for listener in reversed(self.listeners):
             f = getattr(listener, method, None)
             if f is not None:
                 # The listener has only been partially implemented possibly
