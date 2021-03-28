@@ -1,5 +1,7 @@
 from typing import Protocol
 
+from restpite import RestpiteResponse
+
 
 class RestpiteListener(Protocol):
     """
@@ -10,7 +12,7 @@ class RestpiteListener(Protocol):
     def before_sending_request(self) -> None:
         ...
 
-    def after_receiving_response(self) -> None:
+    def after_receiving_response(self, response: RestpiteResponse) -> None:
         ...
 
     def on_exception(self, exc: BaseException) -> None:

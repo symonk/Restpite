@@ -7,12 +7,10 @@ import typing
 import requests
 from requests.auth import AuthBase
 
+from restpite import RestpiteListener
+from restpite import RestpiteResponse
 from restpite.__version__ import __version__
 from restpite.http import http_protocols
-from restpite.listeners import listener_protocols
-from restpite.listeners import listeners as builtin_listeners
-
-from .response import RestpiteResponse
 
 log = logging.getLogger(__name__)
 
@@ -52,7 +50,7 @@ class RestpiteSession:
     passing a file path to either a CA_BUNDLE or directory with a certificates of trusted CAs as well as boolean.
     As per requests standard, directories of certificates here must of been parsed with the `c_rehash` utility
     supplied by OpenSSL.
-    :param maximum_redirects_limit: integer of how many redirects requests permits before raising a
+    :param max_redirects: integer of how many redirects requests permits before raising a
     `TooManyRedirects` exception.
     :param adapters: List of additional transport adapters to mount on the HTTP session.  By default
     session ships with a simple `requests.adapter.HTTPAdapter` listening for all traffic on both http
@@ -66,9 +64,7 @@ class RestpiteSession:
     def __init__(
         self,
         headers: typing.Optional[typing.Dict[str, str]] = None,
-        listeners: typing.Optional[
-            typing.List[listener_protocols.RestpiteListener]
-        ] = None,
+        listeners: typing.Optional[typing.List[RestpiteListener]] = None,
         connection_timeout: float = 31.00,
         read_timeout: float = 31.00,
         params: typing.Optional[
@@ -76,7 +72,7 @@ class RestpiteSession:
         ] = None,
         stream: bool = False,
         verify: typing.Union[bool, str] = True,
-        maximum_redirects_limit: int = 30,
+        max_redirects: int = 30,
         adapters: typing.Optional[typing.List[http_protocols.Mountable]] = None,
         user_agent: typing.Optional[str] = None,
         auth: typing.Optional[
@@ -92,13 +88,12 @@ class RestpiteSession:
             f"restpite-{__version__}" if not user_agent else user_agent
         )
         self.listeners = [] if listeners is None else listeners.copy()
-        self.listeners.insert(0, builtin_listeners.LoggingListener())
         self.connection_timeout = connection_timeout
         self.read_timeout = read_timeout
         self.params = params or {}
         self.defer_response_body = stream
         self.verify = verify
-        self.max_redirects = maximum_redirects_limit
+        self.max_redirects = max_redirects
         self.adapters = adapters or []
         self.auth = auth
         self.session = self._prepare_session()
@@ -141,7 +136,7 @@ class RestpiteSession:
     ) -> None:
         self.session.close()
 
-    def request(self, method: str, *args, **kwargs) -> RestpiteResponse:
+    def request(self, method: str, url: str, *args, **kwargs) -> RestpiteResponse:
         """
         Responsible for managing the actual HTTP Request from request -> Response
         # TODO: Understand these types (args)
@@ -152,10 +147,37 @@ class RestpiteSession:
         # TODO: Listeners need dispatched here multiple times, Hooks need invoked as well to permit control!
         # TODO: Built in capturing of all traffic, thinking simple `restpite.json` (configurable on|off) ?
         """
-        return RestpiteResponse(self.session.request(method, *args, **kwargs))
+        try:
+            self._dispatch_listener("before_sending_request")
+            response = RestpiteResponse(
+                self.session.request(method, url, *args, **kwargs)
+            )
+            self._dispatch_listener("after_receiving_Response", response)
+            return response
+        except Exception as exc:
+            # TODO: Too broad!
+            self._dispatch_listener("on_exception", exc)
+            raise exc from None
 
-    def get(self, *args, **kwargs) -> RestpiteResponse:
+    def get(self, url: str, *args, **kwargs) -> RestpiteResponse:
+        # TODO: Implement the full flow on HTTP GETs here, then we can build on it. but it should account
+        # TODO: For both listener and event/hook dispatching
         """
         Issue a HTTP GET request
         """
-        return self.request(*args, **kwargs)
+        return self.request("get", url, *args, **kwargs)
+
+    def _dispatch_listener(self, method: str, *args: typing.Any) -> None:
+        """
+        For each listener in the listener stack, invoke the listener function with
+        the appropriate arguments.
+
+        :param method: the method name (str) to be invoked
+        :param *args: Arbitrary arguments for the listener function
+        """
+        for listener in self.listeners:
+            f = getattr(listener, method, None)
+            if f is not None:
+                # The listener has only been partially implemented possibly
+                # That is perfectly acceptable here, client code may only want to listen for a few things
+                f(*args)
