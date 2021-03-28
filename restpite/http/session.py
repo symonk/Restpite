@@ -2,7 +2,15 @@ from __future__ import annotations
 
 import logging
 import types
-import typing
+from typing import Any
+from typing import Callable
+from typing import Dict
+from typing import List
+from typing import MutableMapping
+from typing import Optional
+from typing import Tuple
+from typing import Type
+from typing import Union
 
 import requests
 from requests.auth import AuthBase
@@ -63,23 +71,21 @@ class RestpiteSession:
 
     def __init__(
         self,
-        headers: typing.Optional[typing.Dict[str, str]] = None,
-        listeners: typing.Optional[typing.List[RestpiteListener]] = None,
+        headers: Optional[Dict[str, str]] = None,
+        listeners: Optional[List[RestpiteListener]] = None,
         connection_timeout: float = 31.00,
         read_timeout: float = 31.00,
-        params: typing.Optional[
-            typing.Union[bytes, typing.MutableMapping[str, str]]
-        ] = None,
+        params: Optional[Union[bytes, MutableMapping[str, str]]] = None,
         stream: bool = False,
-        verify: typing.Union[bool, str] = True,
+        verify: Union[bool, str] = True,
         max_redirects: int = 30,
-        adapters: typing.Optional[typing.List[http_protocols.Mountable]] = None,
-        user_agent: typing.Optional[str] = None,
-        auth: typing.Optional[
-            typing.Union[
-                typing.Tuple[str, str],
+        adapters: Optional[List[http_protocols.Mountable]] = None,
+        user_agent: Optional[str] = None,
+        auth: Optional[
+            Union[
+                Tuple[str, str],
                 AuthBase,
-                typing.Callable[[requests.Request], requests.Request],
+                Callable[[requests.Request], requests.Request],
             ]
         ] = None,
     ) -> None:
@@ -98,7 +104,7 @@ class RestpiteSession:
         self.auth = auth
         self.session = self._prepare_session()
 
-    def __getattr__(self, item: str) -> typing.Any:
+    def __getattr__(self, item: str) -> Any:
         """
         Proxy unknown attribute lookups onto the underlying `requests.Session` instance.
         Eventually a full API will be exposed by restpite to make this redundant but this
@@ -130,13 +136,31 @@ class RestpiteSession:
 
     def __exit__(
         self,
-        exc_type: typing.Optional[typing.Type[BaseException]] = None,
-        exc_value: typing.Optional[BaseException] = None,
-        traceback: typing.Optional[types.TracebackType] = None,
+        exc_type: Optional[Type[BaseException]] = None,
+        exc_value: Optional[BaseException] = None,
+        traceback: Optional[types.TracebackType] = None,
     ) -> None:
         self.session.close()
 
-    def request(self, method: str, url: str, *args, **kwargs) -> RestpiteResponse:
+    def request(
+        self,
+        method: str,
+        url: str,
+        params=None,
+        data=None,
+        headers=None,
+        cookies=None,
+        files=None,
+        auth=None,
+        timeout=None,
+        allow_redirects=None,
+        proxies=None,
+        hooks=None,
+        stream=None,
+        verify=None,
+        cert=None,
+        json=None,
+    ) -> RestpiteResponse:
         """
         Responsible for managing the actual HTTP Request from request -> Response
         # TODO: Understand these types (args)
@@ -150,7 +174,24 @@ class RestpiteSession:
         try:
             self._dispatch_listener("before_sending_request")
             response = RestpiteResponse(
-                self.session.request(method, url, *args, **kwargs)
+                self.session.request(
+                    method,
+                    url,
+                    params,
+                    data,
+                    headers,
+                    cookies,
+                    files,
+                    auth,
+                    timeout,
+                    allow_redirects,
+                    proxies,
+                    hooks,
+                    stream,
+                    verify,
+                    cert,
+                    json,
+                )
             )
             self._dispatch_listener("after_receiving_response", response)
             return response
@@ -167,7 +208,7 @@ class RestpiteSession:
         """
         return self.request("get", url, *args, **kwargs)
 
-    def _dispatch_listener(self, method: str, *args: typing.Any) -> None:
+    def _dispatch_listener(self, method: str, *args: Any) -> None:
         """
         For each listener in the listener stack, invoke the listener function with
         the appropriate arguments.

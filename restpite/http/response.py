@@ -62,6 +62,10 @@ class RestpiteResponse:
         assert_that(self.status_code).is_equal_to(status_codes.forbidden)
         return self
 
+    def history_length_was(self, expected_length: int) -> RestpiteResponse:
+        assert_that(self.wrapped_response.history).is_length(expected_length)
+        return self
+
     def had_status_code(self, expected_code: int) -> RestpiteResponse:
         assert_that(self.status_code).is_equal_to(expected_code)
         return self
