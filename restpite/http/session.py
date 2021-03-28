@@ -152,7 +152,7 @@ class RestpiteSession:
             response = RestpiteResponse(
                 self.session.request(method, url, *args, **kwargs)
             )
-            self._dispatch_listener("after_receiving_Response", response)
+            self._dispatch_listener("after_receiving_response", response)
             return response
         except Exception as exc:
             # TODO: Too broad!
