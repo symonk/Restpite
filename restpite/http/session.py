@@ -15,9 +15,10 @@ from typing import Union
 import requests
 from requests.auth import AuthBase
 
-from restpite import RestpiteListener
+from restpite import NotifyProtocol
 from restpite import RestpiteResponse
 from restpite.__version__ import __version__
+from restpite.events.dispatcher import EventDispatcher
 from restpite.http import http_protocols
 
 log = logging.getLogger(__name__)
@@ -48,7 +49,6 @@ class RestpiteSession:
         `Connection` = `Keep-Alive`
 
 
-    :param listeners: Optional implementations of the `RestpiteListener` Protocol
     :param connection_timeout: How long we will wait for your client to establish a remote connection, defaults to 31.00
     :param read_timeout: How long we will wait for the server to send a response, defaults to 31.00
     :param params: A mapping of strings to indicate query string parameters, appended to all request urls
@@ -72,7 +72,7 @@ class RestpiteSession:
     def __init__(
         self,
         headers: Optional[Dict[str, str]] = None,
-        listeners: Optional[List[RestpiteListener]] = None,
+        handlers: Optional[List[NotifyProtocol]] = None,
         connection_timeout: float = 31.00,
         read_timeout: float = 31.00,
         params: Optional[Union[bytes, MutableMapping[str, str]]] = None,
@@ -93,7 +93,6 @@ class RestpiteSession:
         self.headers["User-Agent"] = (
             f"restpite-{__version__}" if not user_agent else user_agent
         )
-        self.listeners = [] if listeners is None else listeners.copy()
         self.connection_timeout = connection_timeout
         self.read_timeout = read_timeout
         self.params = params or {}
@@ -102,6 +101,10 @@ class RestpiteSession:
         self.max_redirects = max_redirects
         self.adapters = adapters or []
         self.auth = auth
+        self.event_dispatcher = EventDispatcher()
+        handlers = handlers.copy() if handlers is not None else []
+        for handler in handlers:
+            self.event_dispatcher.subscribe(handler)
         self.session = self._prepare_session()
 
     def __getattr__(self, item: str) -> Any:
@@ -165,14 +168,14 @@ class RestpiteSession:
         Responsible for managing the actual HTTP Request from request -> Response
         # TODO: Understand these types (args)
         # TODO: Understand the proper flow of the traffic through the underlying requests library
-        # TODO: Dispatching listener mechanism around some of this
+        # TODO: Dispatching hooks mechanism around some of this
         # TODO: Hooks for raw request sending, raw response received, post RestpiteResponse, post RequestRequest
-        # TODO: Listeners = Simple logging activity, Adapters = Controlling transport, Hooks = Doing stuff at points.
-        # TODO: Listeners need dispatched here multiple times, Hooks need invoked as well to permit control!
+        # TODO: handlers = dispatching hook / calls to client code, adapter = transport adapters of requests
+        # TODO: hooks need dispatched here multiple times, Hooks need invoked as well to permit control!
         # TODO: Built in capturing of all traffic, thinking simple `restpite.json` (configurable on|off) ?
         """
         try:
-            self._dispatch_listener("before_sending_request")
+            self.event_dispatcher.dispatch("before_sending_request")
             response = RestpiteResponse(
                 self.session.request(
                     method,
@@ -193,32 +196,51 @@ class RestpiteSession:
                     json,
                 )
             )
-            self._dispatch_listener("after_receiving_response", response)
+            self.event_dispatcher.dispatch("after_receiving_response", response)
             return response
         except Exception as exc:
             # TODO: Too broad!
-            self._dispatch_listener("on_exception", exc)
+            self.event_dispatcher.dispatch("on_exception", exc)
             raise exc from None
 
-    def get(self, url: str, *args, **kwargs) -> RestpiteResponse:
+    def get(
+        self,
+        url: str,
+        params=None,
+        data=None,
+        headers=None,
+        cookies=None,
+        files=None,
+        auth=None,
+        timeout=None,
+        allow_redirects=None,
+        proxies=None,
+        hooks=None,
+        stream=None,
+        verify=None,
+        cert=None,
+        json=None,
+    ) -> RestpiteResponse:
         # TODO: Implement the full flow on HTTP GETs here, then we can build on it. but it should account
         # TODO: For both listener and event/hook dispatching
         """
         Issue a HTTP GET request
         """
-        return self.request("get", url, *args, **kwargs)
-
-    def _dispatch_listener(self, method: str, *args: Any) -> None:
-        """
-        For each listener in the listener stack, invoke the listener function with
-        the appropriate arguments.
-
-        :param method: the method name (str) to be invoked
-        :param *args: Arbitrary arguments for the listener function
-        """
-        for listener in reversed(self.listeners):
-            f = getattr(listener, method, None)
-            if f is not None:
-                # The listener has only been partially implemented possibly
-                # That is perfectly acceptable here, client code may only want to listen for a few things
-                f(*args)
+        return self.request(
+            "get",
+            url,
+            params,
+            data,
+            headers,
+            cookies,
+            files,
+            auth,
+            timeout,
+            allow_redirects,
+            proxies,
+            hooks,
+            stream,
+            verify,
+            cert,
+            json,
+        )

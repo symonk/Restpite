@@ -23,7 +23,7 @@ class RestpiteResponse:
     def headers(self) -> CaseInsensitiveDict[Any]:
         return self.wrapped_response.headers
 
-    def deserialize(self, model: Type[Any]) -> Any:
+    def deserialize(self, model: Type[Any], *args, **kwargs) -> Any:
         return model(**self.wrapped_response.json())
 
     def assert_contained_header(self, header_name: str) -> RestpiteResponse:

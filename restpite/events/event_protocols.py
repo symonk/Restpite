@@ -3,10 +3,10 @@ from typing import Protocol
 from restpite import RestpiteResponse
 
 
-class RestpiteListener(Protocol):
+class NotifyProtocol(Protocol):
     """
-    Custom Protocol for creating user defined listeners.  Listeners can be passed into a
-    `Restpite.Session` and are executed in LIFO order at runtime.
+    Custom protocol for inspecting Restpite request and responses (and others) at runtime in order
+    to drop in and control or manipulate the data.
     """
 
     def before_sending_request(self) -> None:
