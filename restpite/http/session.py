@@ -19,6 +19,7 @@ from restpite import NotifyProtocol
 from restpite import RestpiteResponse
 from restpite.__version__ import __version__
 from restpite.events.dispatcher import EventDispatcher
+from restpite.events.handlers import RequestRecordingHandler
 from restpite.http import http_protocols
 
 log = logging.getLogger(__name__)
@@ -103,6 +104,7 @@ class RestpiteSession:
         self.auth = auth
         self.event_dispatcher = EventDispatcher()
         handlers = handlers.copy() if handlers is not None else []
+        handlers += [RequestRecordingHandler()]
         for handler in handlers:
             self.event_dispatcher.subscribe(handler)
         self.session = self._prepare_session()
