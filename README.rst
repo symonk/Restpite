@@ -28,7 +28,7 @@ Restpite
 
 ----
 
-Restpite is a simply python based HTTP DSL for testing restful web services easily.  It comes bundled with
+Restpite is a simple python based HTTP DSL for testing restful web services easily.  It comes bundled with
 some nice continuity features making it also a perfect for standalone scripts and non test related libraries,
 however the focus here is on testing.  Some of the features of Restpite are:
 
