@@ -1,9 +1,6 @@
 import pytest
 import requests
 
-from restpite import HttpResponse
-from restpite.listeners.listener_protocols import RestpiteListener
-
 from tests.data_providers import data_service
 
 
@@ -23,15 +20,7 @@ def request_default_headers():
 
 
 @pytest.fixture
-def sys_out_listener():
-    class SysOutListener(RestpiteListener):
-        def before_sending_request(self, *args, **kwargs) -> None:
-            print(*args, **kwargs)
+def respite_version() -> str:
+    from restpite.__version__ import __version__
 
-        def after_receiving_response(self, response: HttpResponse) -> None:
-            print(response)
-
-        def on_exception(self, exc) -> None:
-            print(exc)
-
-    return SysOutListener()
+    return f"restpite-{__version__}"

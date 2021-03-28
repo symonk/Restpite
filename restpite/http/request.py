@@ -1,2 +1,2 @@
-class Request:
+class RestpiteRequest:
     ...

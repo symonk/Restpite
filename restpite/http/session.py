@@ -12,11 +12,18 @@ from restpite.http import http_protocols
 from restpite.listeners import listener_protocols
 from restpite.listeners import listeners as builtin_listeners
 
+from .response import RestpiteResponse
+
 log = logging.getLogger(__name__)
 
 
 class RestpiteSession:
     """
+
+    # TODO: How can we dispatch both listener calls and events to user defined 'observers'?
+    # TODO: This would be pretty powerful and allow clients to register their own observers to
+    # TODO: The session, which would be notified on particular actions (listening, hooks, events etc).
+
     The bread and butter of restpite.  Used for persisting session data across multiple
     HTTP requests.  In it's simplest form even simple requests create a single-use
     session under the hood.
@@ -81,13 +88,14 @@ class RestpiteSession:
         ] = None,
     ) -> None:
         self.headers = headers or {}
-        if user_agent:
-            self.headers["User-Agent"] = user_agent or f"restpite-{__version__}"
+        self.headers["User-Agent"] = (
+            f"restpite-{__version__}" if not user_agent else user_agent
+        )
         self.listeners = [] if listeners is None else listeners.copy()
         self.listeners.insert(0, builtin_listeners.LoggingListener())
         self.connection_timeout = connection_timeout
         self.read_timeout = read_timeout
-        self.query_strings = params or {}
+        self.params = params or {}
         self.defer_response_body = stream
         self.verify = verify
         self.max_redirects = maximum_redirects_limit
@@ -115,7 +123,7 @@ class RestpiteSession:
         session.stream = self.defer_response_body
         session.verify = self.verify
         session.max_redirects = self.max_redirects
-        session.params = self.query_strings
+        session.params = self.params
         session.headers.update(self.headers)
         session.auth = self.auth
         # TODO: Finish session delegation
@@ -132,3 +140,22 @@ class RestpiteSession:
         traceback: typing.Optional[types.TracebackType] = None,
     ) -> None:
         self.session.close()
+
+    def request(self, method: str, *args, **kwargs) -> RestpiteResponse:
+        """
+        Responsible for managing the actual HTTP Request from request -> Response
+        # TODO: Understand these types (args)
+        # TODO: Understand the proper flow of the traffic through the underlying requests library
+        # TODO: Dispatching listener mechanism around some of this
+        # TODO: Hooks for raw request sending, raw response received, post RestpiteResponse, post RequestRequest
+        # TODO: Listeners = Simple logging activity, Adapters = Controlling transport, Hooks = Doing stuff at points.
+        # TODO: Listeners need dispatched here multiple times, Hooks need invoked as well to permit control!
+        # TODO: Built in capturing of all traffic, thinking simple `restpite.json` (configurable on|off) ?
+        """
+        return RestpiteResponse(self.session.request(method, *args, **kwargs))
+
+    def get(self, *args, **kwargs) -> RestpiteResponse:
+        """
+        Issue a HTTP GET request
+        """
+        return self.request(*args, **kwargs)
