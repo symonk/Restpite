@@ -8,7 +8,8 @@ class EventDispatcher:
         self.handlers: List[NotifyProtocol] = []
 
     def subscribe(self, handler: NotifyProtocol) -> None:
-        self.handlers.append(handler)
+        if handler not in self.handlers:
+            self.handlers.append(handler)
 
     def dispatch(self, method: str, *args, **kwargs) -> None:
         for handler in reversed(self.handlers):
