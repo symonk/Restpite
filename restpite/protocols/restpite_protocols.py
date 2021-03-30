@@ -1,9 +1,17 @@
 from typing import Protocol
+from typing import runtime_checkable
 
 from restpite import RestpiteResponse
 
 
-class NotifyProtocol(Protocol):
+@runtime_checkable
+class SupportsMounting(Protocol):
+    def mount(self):
+        ...
+
+
+@runtime_checkable
+class Notifyable(Protocol):
     """
     Custom protocol for inspecting Restpite request and responses (and others) at runtime in order
     to drop in and control or manipulate the data.
