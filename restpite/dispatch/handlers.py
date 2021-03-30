@@ -1,12 +1,11 @@
 import logging
 
 from restpite import RestpiteResponse
-from restpite.protocols.restpite_protocols import Notifyable
 
 log = logging.getLogger(__name__)
 
 
-class RequestRecordingHandler(Notifyable):
+class RequestRecordingHandler:
     def __init__(self):
         ...
 

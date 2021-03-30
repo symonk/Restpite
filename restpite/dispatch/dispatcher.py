@@ -4,7 +4,7 @@ from typing import List
 from restpite.protocols.restpite_protocols import Notifyable
 
 
-class EventDispatcher:
+class HandlerDispatcher:
     def __init__(self) -> None:
         self.handlers: List[Notifyable] = []
 

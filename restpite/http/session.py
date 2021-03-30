@@ -18,8 +18,8 @@ from requests.auth import AuthBase
 from restpite import NotifyProtocol
 from restpite import RestpiteResponse
 from restpite.__version__ import __version__
-from restpite.events.dispatcher import EventDispatcher
-from restpite.events.handlers import RequestRecordingHandler
+from restpite.dispatch.dispatcher import HandlerDispatcher
+from restpite.dispatch.handlers import RequestRecordingHandler
 from restpite.http import http_protocols
 
 log = logging.getLogger(__name__)
@@ -102,7 +102,7 @@ class RestpiteSession:
         self.max_redirects = max_redirects
         self.adapters = adapters or []
         self.auth = auth
-        self.event_dispatcher = EventDispatcher()
+        self.event_dispatcher = HandlerDispatcher()
         handlers = handlers.copy() if handlers is not None else []
         handlers += [RequestRecordingHandler()]
         for handler in handlers:
