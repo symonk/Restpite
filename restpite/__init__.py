@@ -1,9 +1,9 @@
 """isort:skip_file"""
 
+from .protocols.restpite_protocols import Notifyable
 from .http.response import RestpiteResponse
 from .http.session import RestpiteSession
 from .http.request import RestpiteRequest
-from .protocols.restpite_protocols import Notifyable
 from .api import get
 
 import logging
