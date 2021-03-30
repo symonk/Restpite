@@ -15,12 +15,11 @@ from typing import Union
 import requests
 from requests.auth import AuthBase
 
-from restpite import NotifyProtocol
+from restpite import Notifyable
 from restpite import RestpiteResponse
 from restpite.__version__ import __version__
 from restpite.dispatch.dispatcher import HandlerDispatcher
 from restpite.dispatch.handlers import RequestRecordingHandler
-from restpite.http import http_protocols
 
 log = logging.getLogger(__name__)
 
@@ -73,14 +72,14 @@ class RestpiteSession:
     def __init__(
         self,
         headers: Optional[Dict[str, str]] = None,
-        handlers: Optional[List[NotifyProtocol]] = None,
+        handlers: Optional[List[Notifyable]] = None,
         connection_timeout: float = 31.00,
         read_timeout: float = 31.00,
         params: Optional[Union[bytes, MutableMapping[str, str]]] = None,
         stream: bool = False,
         verify: Union[bool, str] = True,
         max_redirects: int = 30,
-        adapters: Optional[List[http_protocols.Mountable]] = None,
+        adapters: Optional[List[Notifyable]] = None,
         user_agent: Optional[str] = None,
         auth: Optional[
             Union[
@@ -102,11 +101,11 @@ class RestpiteSession:
         self.max_redirects = max_redirects
         self.adapters = adapters or []
         self.auth = auth
-        self.event_dispatcher = HandlerDispatcher()
+        self.handler_dispatcher = HandlerDispatcher()
         handlers = handlers.copy() if handlers is not None else []
         handlers += [RequestRecordingHandler()]
         for handler in handlers:
-            self.event_dispatcher.subscribe(handler)
+            self.handler_dispatcher.subscribe(handler)
         self.session = self._prepare_session()
 
     def __getattr__(self, item: str) -> Any:
@@ -177,7 +176,7 @@ class RestpiteSession:
         # TODO: Built in capturing of all traffic, thinking simple `restpite.json` (configurable on|off) ?
         """
         try:
-            self.event_dispatcher.dispatch("before_sending_request")
+            self.handler_dispatcher.dispatch("before_sending_request")
             response = RestpiteResponse(
                 self.session.request(
                     method,
@@ -198,11 +197,11 @@ class RestpiteSession:
                     json,
                 )
             )
-            self.event_dispatcher.dispatch("after_receiving_response", response)
+            self.handler_dispatcher.dispatch("after_receiving_response", response)
             return response
         except Exception as exc:
             # TODO: Too broad!
-            self.event_dispatcher.dispatch("on_exception", exc)
+            self.handler_dispatcher.dispatch("on_exception", exc)
             raise exc from None
 
     def get(

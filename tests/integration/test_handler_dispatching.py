@@ -1,11 +1,11 @@
 import logging
 
-from restpite import NotifyProtocol
+from restpite import Notifyable
 from restpite import RestpiteSession
 
 
 def test_custom_handler_before_request(basic_endpoint_no_handler, caplog) -> None:
-    class BasicHandler(NotifyProtocol):
+    class BasicHandler(Notifyable):
         def before_sending_request(self) -> None:
             logging.warning("Before sending request!")
 
@@ -17,7 +17,7 @@ def test_custom_handler_before_request(basic_endpoint_no_handler, caplog) -> Non
 def test_custom_handler_after_receiving_response(
     basic_endpoint_no_handler, caplog
 ) -> None:
-    class BasicHandler(NotifyProtocol):
+    class BasicHandler(Notifyable):
         def after_receiving_response(self, response) -> None:
             logging.warning(f"After sending response: {response}")
 
