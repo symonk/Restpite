@@ -3,6 +3,17 @@ from restpite import RestpiteSession
 
 
 class RestpiteRequest:
+    """
+    The Entrypoint class to restpite.  Used for crafting custom requests (lazily)
+    and later sending them.  The Request wrapper offers some in built testability.
+
+    :param method: The HTTP Method this request will perform when sent.
+    :param url: The request url
+    :param params: Query string parameters to be appended to the url
+
+
+    """
+
     def __init__(
         self,
         method: str,

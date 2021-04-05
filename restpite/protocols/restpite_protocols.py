@@ -5,7 +5,7 @@ from restpite import RestpiteResponse
 
 
 @runtime_checkable
-class SupportsMounting(Protocol):
+class Mountable(Protocol):
     def mount(self):
         ...
 

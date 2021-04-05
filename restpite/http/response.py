@@ -9,6 +9,8 @@ from requests import Response
 from requests import codes as status_codes
 from requests.utils import CaseInsensitiveDict
 
+from restpite.exceptions.exceptions import RestpiteAssertionError
+
 
 class RestpiteResponse:
     def __init__(self, wrapped_response: Response) -> None:
@@ -24,10 +26,18 @@ class RestpiteResponse:
         return self.wrapped_response.headers
 
     def deserialize(self, model: Type[Any], *args, **kwargs) -> Any:
+        # TODO: Incorporate schemas from marshmallow here to allow custom deserialization?
         return model(**self.wrapped_response.json())
 
     def assert_contained_header(self, header_name: str) -> RestpiteResponse:
-        assert_that(header_name).is_in(self.headers)
+        """
+        Given a header name (key), enforces that the HTTP response headers dictionary
+        contained a HTTP Header under such key.
+        :param header_name: A string to lookup in the http response headers mapping
+        """
+        if header_name not in self.headers:
+            message = f"Http Response did not contain a header known as {header_name}"
+            self.error(message)
         return self
 
     def assert_value_was(self, header: str, expected_value: str) -> RestpiteResponse:
@@ -35,7 +45,12 @@ class RestpiteResponse:
         return self
 
     def assert_was_ok(self) -> RestpiteResponse:
-        assert_that(self.status_code).is_equal_to(status_codes.ok)
+        """
+
+        """
+        if self.status_code != status_codes.ok:
+            message = f"Http Response status code was: <{self.status_code}> not: <{status_codes.ok}> as expected"
+            self.error(message)
         return self
 
     def assert_informative(self) -> RestpiteResponse:
@@ -72,6 +87,14 @@ class RestpiteResponse:
 
     def json(self) -> Any:
         return self.wrapped_response.json()
+
+    def error(self, message: str) -> None:
+        """
+        Responsible for raising the `RestpiteAssertionError` which will subsequently cause tests
+        to fail.  RestpiteAssertionError is a simple subclass of `AssertionError` which the aim
+        in future to bolt on more functionality, currently it serves the same purpose.
+        """
+        raise RestpiteAssertionError(message) from None
 
     def __bool__(self) -> bool:
         """
