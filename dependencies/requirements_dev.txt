@@ -1,6 +1,6 @@
 assertpy==1.1
 coverage==5.5
-marshmallow-dataclass==8.3.2
+marshmallow-dataclass==8.4.0
 pip==21.0.1
 pydantic==1.8.1
 pytest==6.2.3
