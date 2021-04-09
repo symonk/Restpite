@@ -10,8 +10,6 @@ class RestpiteRequest:
     :param method: The HTTP Method this request will perform when sent.
     :param url: The request url
     :param params: Query string parameters to be appended to the url
-
-
     """
 
     def __init__(

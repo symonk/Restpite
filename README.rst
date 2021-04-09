@@ -40,3 +40,18 @@ however the focus here is on testing.  Some of the features of Restpite are:
     - Familiarity with the requests API for simple comfortability
 
 ----
+
+
+----
+
+## Contributing
+
+ - Clone the git repository
+ - python -m venv .venv
+ - source .venv/bin/activate (unix) .venv\Scripts\activate (windows)
+ - pip install -e ".[test]"
+ - pre-commit install
+ - Make changes, stage & commit changes (this will auto run the linting stage and un-stage git hook failures)
+ - tox -e linting | tox -e py38
+
+---

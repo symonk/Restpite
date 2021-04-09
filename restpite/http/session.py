@@ -19,7 +19,6 @@ from restpite import Notifyable
 from restpite import RestpiteResponse
 from restpite.__version__ import __version__
 from restpite.dispatch.dispatcher import HandlerDispatcher
-from restpite.dispatch.handlers import RequestRecordingHandler
 
 log = logging.getLogger(__name__)
 
@@ -103,7 +102,6 @@ class RestpiteSession:
         self.auth = auth
         self.handler_dispatcher = HandlerDispatcher()
         handlers = handlers.copy() if handlers is not None else []
-        handlers += [RequestRecordingHandler()]
         for handler in handlers:
             self.handler_dispatcher.subscribe(handler)
         self.session = self._prepare_session()

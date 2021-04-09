@@ -5,7 +5,6 @@ from typing import Optional
 from typing import Sequence
 from typing import Type
 
-from assertpy import assert_that
 from requests import Response
 from requests import codes as status_codes
 from requests.utils import CaseInsensitiveDict
@@ -104,7 +103,7 @@ class RestpiteResponse:
         return self
 
     def assert_was_forbidden(self) -> RestpiteResponse:
-        assert_that(self.status_code).is_equal_to(status_codes.forbidden)
+        assert self.status_code == status_codes.forbidden
         return self
 
     def _assert_response_code_in_range(self, expected_range: Sequence[int]) -> None:
@@ -119,11 +118,11 @@ class RestpiteResponse:
             )
 
     def history_length_was(self, expected_length: int) -> RestpiteResponse:
-        assert_that(self.wrapped_response.history).is_length(expected_length)
+        assert len(self.wrapped_response.history) == expected_length
         return self
 
     def had_status_code(self, expected_code: int) -> RestpiteResponse:
-        assert_that(self.status_code).is_equal_to(expected_code)
+        assert self.status_code == expected_code
         return self
 
     def json(self) -> Any:
