@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 from typing import Optional
+from typing import Sequence
 from typing import Type
 
 from assertpy import assert_that
@@ -106,10 +107,10 @@ class RestpiteResponse:
         assert_that(self.status_code).is_equal_to(status_codes.forbidden)
         return self
 
-    def _assert_response_code_in_range(self, expected_range: range) -> None:
+    def _assert_response_code_in_range(self, expected_range: Sequence[int]) -> None:
         """
         Validates the wrapped response object had a status code inside a particular range
-        :param expected_range: The `range` object to do in checks against.
+        :param expected_range: A sequence of integers to check the status code is in
         :raises RestpiteAssertionError: If the status code is not in expected_range
         """
         if self.status_code not in expected_range:
