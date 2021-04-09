@@ -41,10 +41,8 @@ however the focus here is on testing.  Some of the features of Restpite are:
 
 ----
 
-
+Contributing
 ----
-
-## Contributing
 
  - Clone the git repository
  - python -m venv .venv
@@ -53,5 +51,3 @@ however the focus here is on testing.  Some of the features of Restpite are:
  - pre-commit install
  - Make changes, stage & commit changes (this will auto run the linting stage and un-stage git hook failures)
  - tox -e linting | tox -e py38
-
----
