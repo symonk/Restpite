@@ -40,8 +40,12 @@ class RestpiteResponse:
             self.error(message)
         return self
 
-    def assert_value_was(self, header: str, expected_value: str) -> RestpiteResponse:
-        assert_that(self.headers.get(header)).is_equal_to(expected_value)
+    def assert_header_matches(
+        self, header: str, expected_value: str
+    ) -> RestpiteResponse:
+        if self.wrapped_response.headers[header] != expected_value:
+            message = f"Http Response header: {header} did not contain the value: {expected_value}"
+            self.error(message)
         return self
 
     def assert_was_ok(self) -> RestpiteResponse:
@@ -54,28 +58,64 @@ class RestpiteResponse:
         return self
 
     def assert_informative(self) -> RestpiteResponse:
-        assert_that(self.status_code).is_between(100, 199)
+        """
+        Validates the response status code was in the informative range.
+        This is all status codes starting with: 1xx
+        :raises RestpiteAssertionError: If the status code is outside the permitted range
+        """
+        self._assert_response_code_in_range(range(100, 200))
         return self
 
     def assert_success(self) -> RestpiteResponse:
-        assert_that(self.status_code).is_between(200, 299)
+        """
+        Validates the response status code was in the successful range.
+        This is all status codes starting with: 2xx
+        :raises RestpiteAssertionError: If the status code is outside the permitted range
+        """
+        self._assert_response_code_in_range(range(200, 300))
         return self
 
     def assert_redirect(self) -> RestpiteResponse:
-        assert_that(self.status_code).is_between(300, 399)
+        """
+        Validates the response status code was in the redirect range.
+        This is all status codes starting with: 3xx
+        :raises RestpiteAssertionError: If the status code is outside the permitted range
+        """
+        self._assert_response_code_in_range(range(300, 400))
         return self
 
     def assert_client_error(self) -> RestpiteResponse:
-        assert_that(self.status_code).is_between(400, 499)
+        """
+        Validates the response status code was in the client error range.
+        This is all status codes starting with: 4xx
+        :raises RestpiteAssertionError: If the status code is outside the permitted range
+        """
+        self._assert_response_code_in_range(range(400, 500))
         return self
 
     def assert_server_error(self) -> RestpiteResponse:
-        assert_that(self.status_code).is_between(500, 599)
+        """
+        Validates the response status code was in the server error range.
+        This is all status codes starting with: 5xx
+        :raises RestpiteAssertionError: If the status code is outside the permitted range
+        """
+        self._assert_response_code_in_range(range(500, 600))
         return self
 
     def assert_was_forbidden(self) -> RestpiteResponse:
         assert_that(self.status_code).is_equal_to(status_codes.forbidden)
         return self
+
+    def _assert_response_code_in_range(self, expected_range: range) -> None:
+        """
+        Validates the wrapped response object had a status code inside a particular range
+        :param expected_range: The `range` object to do in checks against.
+        :raises RestpiteAssertionError: If the status code is not in expected_range
+        """
+        if self.status_code not in expected_range:
+            self.error(
+                f"Expected: {self.status_code} to be in: {expected_range} but it was not"
+            )
 
     def history_length_was(self, expected_length: int) -> RestpiteResponse:
         assert_that(self.wrapped_response.history).is_length(expected_length)
