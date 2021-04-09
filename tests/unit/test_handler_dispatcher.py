@@ -17,6 +17,7 @@ class SpyHandler:
 
 
 def test_handler_teardown(mocker: MockerFixture) -> None:
+    # TODO: Make this test explicit in terms of handler invocations, not dispatcher invocations!
     dispatcher = HandlerDispatcher()
     handler = SpyHandler()
     spy = mocker.spy(dispatcher, "subscribe")
