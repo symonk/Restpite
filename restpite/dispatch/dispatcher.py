@@ -28,6 +28,7 @@ class Observable:
     def unsubscribe(self, handler: Notifyable) -> None:
         """
         Attempt to remove a callback from the list of stored callbacks.
+        ValueErrors are suppressed and None is returned if the handler was not previously registered.
         :param handler: Notifyable instance to remove
         """
         with contextlib.suppress(ValueError):
