@@ -2,13 +2,11 @@ import collections
 import contextlib
 from typing import Any
 from typing import Deque
-from typing import MutableMapping
-from typing import Tuple
 
 from restpite.protocols.restpite_protocols import Notifyable
 
 
-class Observable:
+class HandlerDispatcher:
     def __init__(self) -> None:
         self.handlers: Deque[Notifyable] = collections.deque()
 
@@ -40,9 +38,7 @@ class Observable:
         """
         self.handlers.clear()
 
-    def dispatch(
-        self, method: str, *args: Tuple[Any], **kwargs: MutableMapping[Any, Any]
-    ) -> None:
+    def dispatch(self, method: str, *args: Any, **kwargs: Any) -> None:
         """
         Dispatches function calls to all handlers.  By default these handlers are executed in
         LIFO order.  `RestpiteSession` objects dispatch to their registered handlers here,
@@ -53,8 +49,3 @@ class Observable:
             if func is not None:
                 # TODO: Does this need guarded? should we let python raise the TypeError (None is not callable?)
                 func(*args, **kwargs)
-
-
-class HandlerDispatcher(Observable):
-    def __init__(self) -> None:
-        super().__init__()

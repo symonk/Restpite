@@ -17,19 +17,33 @@ class SpyHandler:
 
 
 def test_handler_teardown(mocker: MockerFixture) -> None:
-    # TODO: Make this test explicit in terms of handler invocations, not dispatcher invocations!
     dispatcher = HandlerDispatcher()
     handler = SpyHandler()
-    spy = mocker.spy(dispatcher, "subscribe")
+    spy = mocker.spy(handler, "on_exception")
     dispatcher.subscribe(handler)
-    spy.assert_called_once_with(handler)
+    exc = Exception("foobar")
+    dispatcher.dispatch("on_exception", exc)
+    spy.assert_called_once_with(exc)
+
+
+def test_lifo_handler_dispatching() -> None:
+    # TODO: Implement!
+    ...
 
 
 def test_raises_on_no_protocol() -> None:
     with pytest.raises(TypeError) as error:
         handler = HandlerDispatcher()
-        handler.subscribe(1337)
+        handler.subscribe(1337)  # noqa
     assert (
         error.value.args[0]
         == "Type of handle was: <class 'int'>, it should be: <class 'typing._ProtocolMeta'>"
     )
+
+
+def test_dispatch_handler_resetting():
+    dispatcher = HandlerDispatcher()
+    dispatcher.subscribe(SpyHandler())
+    assert len(dispatcher.handlers) == 1
+    dispatcher.reset()
+    assert len(dispatcher.handlers) == 0
