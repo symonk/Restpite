@@ -14,7 +14,7 @@ Restpite
         :target: https://travis-ci.com/symonk/restpite
 
 .. image:: https://restpite.readthedocs.io/en/latest/?badge=latest
-        :target: https://restpite.readthedocs.io/en/latest/?badge=latest
+        :target: https://restpite.readthedocs.io/en/latest/
         :alt: Documentation Status
 
 
