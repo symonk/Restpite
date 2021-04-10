@@ -13,7 +13,7 @@ Restpite
 .. image:: https://travis-ci.com/symonk/restpite.svg?branch=master
         :target: https://travis-ci.com/symonk/restpite
 
-.. image:: https://restpite.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/restpite/badge/?version=latest
         :target: https://restpite.readthedocs.io/en/latest/
         :alt: Documentation Status
 
@@ -42,9 +42,8 @@ however the focus here is on testing.  Some of the features of Restpite are:
 ----
 
 A Trivial Example
-----
 
-.. include:: examples/trivial_example.py
+.. literalinclude:: examples/trivial_example.py
 
 
 Contributing
