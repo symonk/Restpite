@@ -107,3 +107,4 @@ Contributing
     pip install -e ".[test]"
     pre-commit install
     tox -e linting, py38
+    push changes to upstream branch and open a pull request!
