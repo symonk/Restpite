@@ -41,6 +41,18 @@ however the focus here is on testing.  Some of the features of Restpite are:
 
 ----
 
+A Trivial Example
+----
+
+```python
+from restpite import get
+
+class MyModel:
+
+
+```
+
+
 Contributing
 ----
 
