@@ -5,6 +5,7 @@ from typing import Optional
 from typing import Sequence
 from typing import Type
 
+from marshmallow_dataclass import class_schema
 from requests import Response
 from requests import codes as status_codes
 from requests.utils import CaseInsensitiveDict
@@ -25,9 +26,14 @@ class RestpiteResponse:
     def headers(self) -> CaseInsensitiveDict[Any]:
         return self.wrapped_response.headers
 
-    def deserialize(self, model: Type[Any], *args, **kwargs) -> Any:
+    @property
+    def json(self) -> Any:
+        return self.wrapped_response.json()
+
+    def deserialize(self, schema: Type[Any], *args, **kwargs) -> Any:
         # TODO: Incorporate schemas from marshmallow here to allow custom deserialization?
-        return model(**self.wrapped_response.json())
+        schema = class_schema(schema)()
+        return schema.dump(self.json, *args, **kwargs)
 
     def assert_contained_header(self, header_name: str) -> RestpiteResponse:
         """
@@ -46,6 +52,23 @@ class RestpiteResponse:
         if self.wrapped_response.headers[header] != expected_value:
             message = f"Http Response header: {header} did not contain the value: {expected_value}"
             self.error(message)
+        return self
+
+    def assert_application_json(self) -> RestpiteResponse:
+        """
+        Scan the response object headers for the content-type header and assert that it contained
+        application/json.  contains is used because it is not uncommon for this header to return
+        charset utf-8; etc.
+        """
+        content_header = self.headers.get("Content-Type", None)
+        if content_header is None:
+            self.error(
+                f"Response did not contain a `Content-Type` header.. {repr(self.headers)}"
+            )
+        if r"application/json" not in content_header:
+            self.error(
+                f"Response did not contain `application/json` in its content type header.. {repr(self.headers)}"
+            )
         return self
 
     def assert_was_ok(self) -> RestpiteResponse:
@@ -124,9 +147,6 @@ class RestpiteResponse:
     def had_status_code(self, expected_code: int) -> RestpiteResponse:
         assert self.status_code == expected_code
         return self
-
-    def json(self) -> Any:
-        return self.wrapped_response.json()
 
     def error(self, message: str) -> None:
         """

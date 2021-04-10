@@ -13,7 +13,7 @@ Restpite
 .. image:: https://travis-ci.com/symonk/restpite.svg?branch=master
         :target: https://travis-ci.com/symonk/restpite
 
-.. image:: https://readthedocs.org/projects/restpite/badge/?version=latest
+.. image:: https://restpite.readthedocs.io/en/latest/?badge=latest
         :target: https://restpite.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
@@ -44,13 +44,7 @@ however the focus here is on testing.  Some of the features of Restpite are:
 A Trivial Example
 ----
 
-```python
-from restpite import get
-
-class MyModel:
-
-
-```
+.. include:: examples/trivial_example.py
 
 
 Contributing
