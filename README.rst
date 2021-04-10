@@ -99,10 +99,10 @@ A Trivial Example
 Contributing
 ----
 
- # Clone the git repository
- # python -m venv .venv
- # source .venv/bin/activate (unix) .venv\Scripts\activate (windows)
- # pip install -e ".[test]"
- # pre-commit install
- # Make changes, stage & commit changes (this will auto run the linting stage and un-stage git hook failures)
- # tox -e linting | tox -e py38
+1. Clone the git repository
+2. python -m venv .venv
+3. source .venv/bin/activate (unix) .venv\Scripts\activate (windows)
+4. pip install -e ".[test]"
+5. pre-commit install
+6. Make changes, stage & commit changes (this will auto run the linting stage and un-stage git hook failures)
+7. tox -e linting | tox -e py38
