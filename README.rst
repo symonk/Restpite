@@ -32,12 +32,27 @@ Restpite is a simple python based HTTP DSL for testing restful web services easi
 some nice continuity features making it also a perfect for standalone scripts and non test related libraries,
 however the focus here is on testing.  Some of the features of Restpite are:
 
-1. Automatic deserialization to python objects using marshmallow schemas
-2. Robust RestpiteResponse objects with inbuilt assertions and assertion chaining
-3. Listener system to allow client code to inspect traffic data easily
-4. Powerful hooking system to allow client code to modify the behaviour of Restpite at runtime
-5.  Fluent, English readable DSL
-6.  Familiarity with the requests API for simple comfortability
+Aim of the library:
+
+ - Easily write API wrappers for testing restful web services
+ - Easily build HTTP based python scripts that require resiliency out of the box
+ - Support fire & forget / libraries that deal primarily with HTTP but do not care about explicitly testing something
+
+Outline of planned features:
+
+ - Support for customisable, retryable requests (idempotent or not)
+ - Support for all HTTP Verbs and permit user defined custom ones, `MKCOL` as an example
+ - Inbuilt tracking of all HTTP traffic, permitting logging output
+ - Pytest plugin `pytest-restpite` (way later on)
+ - Powerful, Customisable `RestpiteResponse` deserialization to user defined objects
+ - Ability to track performance metrics of all HTTP traffic
+ - In built assertions to `RestpiteRequest` objects to make test writing clean and concise
+ - Observable / Adapter system to allow client code to easily hook into the HTTP flow and modify behaviour
+ - Resiliency notifications (minor use case but perhaps useful for some users)
+ - Request-to-curl command output (easy recreation in test environments etc)
+ - Allure integrations for continuous integration testing visibility / ease of use
+ - English, readable DSL
+ - Support for BDD scenario test writing (Given, Then, When etc)
 
 ----
 
