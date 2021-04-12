@@ -33,6 +33,3 @@ jobs:
     - name: Execute tests
       run: |
         tox -v
-    - name: Code Coverage
-      run: |
-        echo "Code Coverage!"
