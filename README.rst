@@ -104,7 +104,7 @@ Contributing
     git@github.com:symonk/restpite.git
     python -m venv .venv
     source .venv/bin/activate
-    pip install -e ".[test]"
+    pip install -e ".[testing]"
     pre-commit install
     tox -e linting, py38
     push changes to upstream branch and open a pull request!
