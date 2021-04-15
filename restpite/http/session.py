@@ -17,7 +17,7 @@ from requests.auth import AuthBase
 
 from restpite import Notifyable
 from restpite import RestpiteResponse
-from restpite.__version__ import __version__
+from restpite import __version__
 from restpite.dispatch.dispatcher import HandlerDispatcher
 
 log = logging.getLogger(__name__)
