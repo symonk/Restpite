@@ -6,5 +6,5 @@ def test_default_user_agent(respite_version) -> None:
 
 
 def test_custom_user_agent() -> None:
-    expected = "helloWorld"
+    expected = "expected"
     assert RestpiteSession(user_agent=expected).headers.get("User-Agent") == expected

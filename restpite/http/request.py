@@ -29,6 +29,7 @@ class RestpiteRequest:
         verify=None,
         stream=None,
         cert=None,
+        enforce_success: bool = False,
     ) -> None:
         self.method = method
         self.url = url
@@ -45,6 +46,7 @@ class RestpiteRequest:
         self.verify = verify
         self.stream = stream
         self.cert = cert
+        self.enforce_success = enforce_success
 
     def __call__(self, *args, **kwargs) -> RestpiteResponse:
         return self.send()
