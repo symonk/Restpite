@@ -23,8 +23,10 @@ Restpite
      :alt: Updates
 
 
+
 .. image:: https://codecov.io/gh/symonk/restpite/branch/master/graph/badge.svg?token=E7SVA868NR
     :target: https://codecov.io/gh/symonk/restpite
+
 
 ----
 
