@@ -21,6 +21,6 @@ def request_default_headers():
 
 @pytest.fixture
 def respite_version() -> str:
-    from restpite.__version__ import __version__
+    from restpite import __version__
 
     return f"restpite-{__version__}"
