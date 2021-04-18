@@ -7,8 +7,8 @@ Restpite
 ========
 
 
-.. image:: https://img.shields.io/pypi/v/restpite.svg
-        :target: https://pypi.python.org/pypi/restpite
+.. image:: https://github.com/symonk/restpite/actions/workflows/python-package.yml/badge.svg
+        :target: https://github.com/symonk/restpite/actions
 
 .. image:: https://github.com/symonk/restpite/actions/workflows/python-package.yml/badge.svg
         :target: https://github.com/symonk/restpite/actions/workflows/python-package.yml/badge.svg
