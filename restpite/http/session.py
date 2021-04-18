@@ -3,16 +3,13 @@ from __future__ import annotations
 import logging
 import types
 from typing import Any
-from typing import Callable
-from typing import Dict
 from typing import List
-from typing import MutableMapping
 from typing import Optional
-from typing import Tuple
 from typing import Type
 from typing import Union
 
 import httpx
+from httpx import Headers
 
 from restpite import Notifyable
 from restpite import RestpiteResponse
@@ -79,30 +76,22 @@ class RespiteClient:
 
     def __init__(
         self,
-        headers: Optional[Dict[str, str]] = None,
+        headers: HTTP_HEADERS_ALIAS = None,
         handlers: Optional[List[Notifyable]] = None,
-        connection_timeout: float = 31.00,
-        read_timeout: float = 31.00,
-        params: Optional[Union[bytes, MutableMapping[str, str]]] = None,
-        stream: bool = False,
+        timeout: HTTP_TIMEOUT_ALIAS = None,
+        params: HTTP_QUERY_STRING_ALIAS = None,
         verify: Union[bool, str] = True,
-        max_redirects: int = 30,
         adapters: Optional[List[Notifyable]] = None,
         user_agent: Optional[str] = None,
-        auth: Optional[
-            Union[Tuple[str, str], httpx.Auth, Callable[[httpx.Request], httpx.Request]]
-        ] = None,
+        auth: HTTP_AUTH_ALIAS = None,
     ) -> None:
-        self.headers = headers or {}
+        self.headers = headers or Headers()
         self.headers["User-Agent"] = (
             f"restpite-{__version__}" if not user_agent else user_agent
         )
-        self.connection_timeout = connection_timeout
-        self.read_timeout = read_timeout
+        self.timeout = timeout
         self.params = params or {}
-        self.defer_response_body = stream
         self.verify = verify
-        self.max_redirects = max_redirects
         self.adapters = adapters or []
         self.auth = auth
         self.handler_dispatcher = HandlerDispatcher()
