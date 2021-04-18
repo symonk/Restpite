@@ -11,16 +11,11 @@ Restpite
         :target: https://pypi.python.org/pypi/restpite
 
 .. image:: https://github.com/symonk/restpite/actions/workflows/python-package.yml/badge.svg
-        :target: https://github.com/symonk/restpite/actions/workflows/python-package.yml/badge.svg
+        :target: https://github.com/symonk/restpite/actions
 
 .. image:: https://readthedocs.org/projects/restpite/badge/?version=latest
         :target: https://restpite.readthedocs.io/en/latest/
         :alt: Documentation Status
-
-
-.. image:: https://github.com/symonk/restpite/actions/workflows/python-package.yml/badge.svg
-        :target: https://github.com/symonk/restpite/actions
-
 
 .. image:: https://codecov.io/gh/symonk/restpite/branch/master/graph/badge.svg?token=E7SVA868NR
     :target: https://codecov.io/gh/symonk/restpite
