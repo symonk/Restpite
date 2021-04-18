@@ -12,18 +12,27 @@ from typing import Tuple
 from typing import Type
 from typing import Union
 
-import requests
-from requests.auth import AuthBase
+import httpx
 
 from restpite import Notifyable
 from restpite import RestpiteResponse
 from restpite import __version__
 from restpite.dispatch.dispatcher import HandlerDispatcher
+from restpite.http.http_types import HTTP_AUTH_ALIAS
+from restpite.http.http_types import HTTP_CONTENT_ALIAS
+from restpite.http.http_types import HTTP_COOKIES_ALIAS
+from restpite.http.http_types import HTTP_DATA_ALIAS
+from restpite.http.http_types import HTTP_FILES_ALIAS
+from restpite.http.http_types import HTTP_HEADERS_ALIAS
+from restpite.http.http_types import HTTP_JSON_ALIAS
+from restpite.http.http_types import HTTP_QUERY_STRING_ALIAS
+from restpite.http.http_types import HTTP_TIMEOUT_ALIAS
+from restpite.http.http_types import HTTP_URLTYPES_ALIAS
 
 log = logging.getLogger(__name__)
 
 
-class RestpiteSession:
+class RespiteClient:
     """
 
     # TODO: How can we dispatch both listener calls and events to user defined 'observers'?
@@ -81,11 +90,7 @@ class RestpiteSession:
         adapters: Optional[List[Notifyable]] = None,
         user_agent: Optional[str] = None,
         auth: Optional[
-            Union[
-                Tuple[str, str],
-                AuthBase,
-                Callable[[requests.Request], requests.Request],
-            ]
+            Union[Tuple[str, str], httpx.Auth, Callable[[httpx.Request], httpx.Request]]
         ] = None,
     ) -> None:
         self.headers = headers or {}
@@ -104,7 +109,7 @@ class RestpiteSession:
         handlers = handlers.copy() if handlers is not None else []
         for handler in handlers:
             self.handler_dispatcher.subscribe(handler)
-        self.session = self._prepare_session()
+        self.client = self._prepare_client()
 
     def __getattr__(self, item: str) -> Any:
         """
@@ -114,15 +119,15 @@ class RestpiteSession:
         not a full `Proxy` but a mere 'do for now' while in the alpha stages, more to be
         investigated on this later.
         """
-        return getattr(self.session, item)
+        return getattr(self.client, item)
 
-    def _prepare_session(self) -> requests.Session:
+    def _prepare_client(self) -> httpx.Client:
         """
         Requests Session objects cannot be instantiated using some of the supported arguments of
         restpite, restpite makes this a little easier for users who want to set some 'global' values
         when instantiating a `RestpiteSession` where the delegating is handled here.
         """
-        session = requests.Session()
+        session = httpx.Client()
         session.stream = self.defer_response_body
         session.verify = self.verify
         session.max_redirects = self.max_redirects
@@ -133,7 +138,7 @@ class RestpiteSession:
         # TODO: Missing (proxies, hooks, cert, trust_env, cookies, adapters)
         return session
 
-    def __enter__(self) -> RestpiteSession:
+    def __enter__(self) -> RespiteClient:
         return self
 
     def __exit__(
@@ -142,26 +147,23 @@ class RestpiteSession:
         exc_value: Optional[BaseException] = None,
         traceback: Optional[types.TracebackType] = None,
     ) -> None:
-        self.session.close()
+        self.client.close()
 
     def request(
         self,
         method: str,
-        url: str,
-        params=None,
-        data=None,
-        headers=None,
-        cookies=None,
-        files=None,
-        auth=None,
-        timeout=None,
-        allow_redirects=None,
-        proxies=None,
-        hooks=None,
-        stream=None,
-        verify=None,
-        cert=None,
-        json=None,
+        url: HTTP_URLTYPES_ALIAS,
+        *,
+        content: HTTP_CONTENT_ALIAS = None,
+        data: HTTP_DATA_ALIAS = None,
+        files: HTTP_FILES_ALIAS = None,
+        json: HTTP_JSON_ALIAS = None,
+        params: HTTP_QUERY_STRING_ALIAS = None,
+        headers: HTTP_HEADERS_ALIAS = None,
+        cookies: HTTP_COOKIES_ALIAS = None,
+        auth: HTTP_AUTH_ALIAS = None,
+        allow_redirects: bool = True,
+        timeout: HTTP_TIMEOUT_ALIAS = None,
     ) -> RestpiteResponse:
         """
         Responsible for managing the actual HTTP Request from request -> Response
@@ -176,23 +178,19 @@ class RestpiteSession:
         try:
             self.handler_dispatcher.dispatch("before_sending_request")
             response = RestpiteResponse(
-                self.session.request(
+                self.client.request(
                     method,
                     url,
-                    params,
-                    data,
-                    headers,
-                    cookies,
-                    files,
-                    auth,
-                    timeout,
-                    allow_redirects,
-                    proxies,
-                    hooks,
-                    stream,
-                    verify,
-                    cert,
-                    json,
+                    content=content,
+                    data=data,
+                    files=files,
+                    json=json,
+                    params=params,
+                    headers=headers,
+                    cookies=cookies,
+                    auth=auth,
+                    allow_redirects=allow_redirects,
+                    timeout=timeout,
                 )
             )
             self.handler_dispatcher.dispatch("after_receiving_response", response)
@@ -202,44 +200,10 @@ class RestpiteSession:
             self.handler_dispatcher.dispatch("on_exception", exc)
             raise exc from None
 
-    def get(
-        self,
-        url: str,
-        params=None,
-        data=None,
-        headers=None,
-        cookies=None,
-        files=None,
-        auth=None,
-        timeout=None,
-        allow_redirects=None,
-        proxies=None,
-        hooks=None,
-        stream=None,
-        verify=None,
-        cert=None,
-        json=None,
-    ) -> RestpiteResponse:
+    def get(self, url: HTTP_URLTYPES_ALIAS, *args, **kwargs) -> RestpiteResponse:
         # TODO: Implement the full flow on HTTP GETs here, then we can build on it. but it should account
         # TODO: For both listener and event/hook dispatching
         """
         Issue a HTTP GET request
         """
-        return self.request(
-            "get",
-            url,
-            params,
-            data,
-            headers,
-            cookies,
-            files,
-            auth,
-            timeout,
-            allow_redirects,
-            proxies,
-            hooks,
-            stream,
-            verify,
-            cert,
-            json,
-        )
+        return self.request("GET", url, *args, **kwargs)

@@ -1,6 +1,6 @@
 from _pytest.monkeypatch import MonkeyPatch
 
-from restpite import RestpiteSession
+from restpite import RespiteClient
 
 
 class BasicHandler:
@@ -19,7 +19,7 @@ class BasicHandler:
 
 def test_before_sending_request(monkeypatch: MonkeyPatch) -> None:
     handler = BasicHandler()
-    response = RestpiteSession(handlers=[handler])  # noqa
+    response = RespiteClient(handlers=[handler])  # noqa
     ...
 
 
