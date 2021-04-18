@@ -1,35 +1,52 @@
 import pytest
+import respx
+from httpx import Response
+from respx import Route
 
-from restpite import RestpiteSession
+from restpite import RespiteClient
 
-MOCK_URL = "http://test.com"
-
-
-@pytest.mark.parametrize("codes", (100, 199))
-def test_assert_informative(requests_mock, codes):
-    requests_mock.get(MOCK_URL, status_code=codes)
-    RestpiteSession().get(MOCK_URL).assert_informative()
+MOCK_URL = "https://www.google.com"
 
 
-@pytest.mark.parametrize("codes", (200, 299))
-def test_assert_successful(requests_mock, codes):
-    requests_mock.get(MOCK_URL, status_code=codes)
-    RestpiteSession().get(MOCK_URL).assert_success()
+@respx.mock
+@pytest.mark.parametrize("status_code", (100, 199))
+def test_assert_informative(status_code):
+    route = _setup_route(status_code)
+    RespiteClient().get(MOCK_URL).assert_informative()
+    assert route.called
 
 
-@pytest.mark.parametrize("codes", (300, 399))
-def test_assert_redirect(requests_mock, codes):
-    requests_mock.get(MOCK_URL, status_code=codes)
-    RestpiteSession().get(MOCK_URL).assert_redirect()
+@respx.mock
+@pytest.mark.parametrize("status_code", (200, 299))
+def test_assert_successful(status_code):
+    route = _setup_route(status_code)
+    RespiteClient().get(MOCK_URL).assert_success()
+    assert route.called
 
 
-@pytest.mark.parametrize("codes", (400, 499))
-def test_assert_client_error(requests_mock, codes):
-    requests_mock.get(MOCK_URL, status_code=codes)
-    RestpiteSession().get(MOCK_URL).assert_client_error()
+@respx.mock
+@pytest.mark.parametrize("status_code", (300, 399))
+def test_assert_redirect(status_code):
+    route = _setup_route(status_code)
+    RespiteClient().get(MOCK_URL).assert_redirect()
+    assert route.called
 
 
-@pytest.mark.parametrize("codes", (500, 599))
-def test_assert_server_error(requests_mock, codes):
-    requests_mock.get(MOCK_URL, status_code=codes)
-    RestpiteSession().get(MOCK_URL).assert_server_error()
+@respx.mock
+@pytest.mark.parametrize("status_code", (400, 499))
+def test_assert_client_error(status_code):
+    route = _setup_route(status_code)
+    RespiteClient().get(MOCK_URL).assert_client_error()
+    assert route.called
+
+
+@respx.mock
+@pytest.mark.parametrize("status_code", (500, 599))
+def test_assert_server_error(status_code):
+    route = _setup_route(status_code)
+    RespiteClient().get(MOCK_URL).assert_server_error()
+    assert route.called
+
+
+def _setup_route(status_code: int) -> Route:
+    return respx.get(MOCK_URL).mock(return_value=Response(status_code))

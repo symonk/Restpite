@@ -1,5 +1,5 @@
+from restpite import RespiteClient
 from restpite import RestpiteResponse
-from restpite import RestpiteSession
 
 
 class RestpiteRequest:
@@ -52,7 +52,7 @@ class RestpiteRequest:
         return self.send()
 
     def send(self) -> RestpiteResponse:
-        with RestpiteSession() as session:
+        with RespiteClient() as session:
             return session.get(
                 **{k: v for k, v in self.__dict__.items() if k != "method"}
             )

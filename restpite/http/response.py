@@ -5,12 +5,12 @@ from typing import Optional
 from typing import Sequence
 from typing import Type
 
+from httpx import Headers
+from httpx import Response
 from marshmallow_dataclass import class_schema
-from requests import Response
-from requests import codes as status_codes
-from requests.utils import CaseInsensitiveDict
 
 from restpite.exceptions.exceptions import RestpiteAssertionError
+from restpite.http import status_codes
 
 
 class RestpiteResponse:
@@ -20,10 +20,10 @@ class RestpiteResponse:
 
     @property
     def status_code(self) -> int:
-        return self.wrapped_response.status_code
+        return self.wrapped_response.status_code  # type: ignore
 
     @property
-    def headers(self) -> CaseInsensitiveDict[Any]:
+    def headers(self) -> Headers:
         return self.wrapped_response.headers
 
     @property
@@ -75,8 +75,10 @@ class RestpiteResponse:
         """
 
         """
-        if self.status_code != status_codes.ok:
-            message = f"Http Response status code was: <{self.status_code}> not: <{status_codes.ok}> as expected"
+        # TODO: Implement custom status codes to avoid indexing tuple sequences etc
+        # TODO: https://github.com/symonk/restpite/issues/98
+        if self.status_code != status_codes.OK[0]:
+            message = f"Http Response status code was: <{self.status_code}> not: <{status_codes.OK[0]}> as expected"
             self.error(message)
         return self
 
@@ -126,7 +128,7 @@ class RestpiteResponse:
         return self
 
     def assert_was_forbidden(self) -> RestpiteResponse:
-        assert self.status_code == status_codes.forbidden
+        assert self.status_code == status_codes.FORBIDDEN[0]
         return self
 
     def _assert_response_code_in_range(self, expected_range: Sequence[int]) -> None:
@@ -161,4 +163,5 @@ class RestpiteResponse:
         Permits truth checks on the HTTPResponse object, where it is considered
         True when the response was a successful response
         """
-        return self.wrapped_response.ok
+        self.assert_was_ok()
+        return True
