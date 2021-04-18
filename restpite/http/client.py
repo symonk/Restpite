@@ -10,21 +10,22 @@ from typing import Union
 
 import httpx
 from httpx import Headers
+from httpx._client import BaseClient
 
 from restpite import Notifyable
 from restpite import RestpiteResponse
 from restpite import __version__
 from restpite.dispatch.dispatcher import HandlerDispatcher
-from restpite.http.http_types import HTTP_AUTH_ALIAS
-from restpite.http.http_types import HTTP_CONTENT_ALIAS
-from restpite.http.http_types import HTTP_COOKIES_ALIAS
-from restpite.http.http_types import HTTP_DATA_ALIAS
-from restpite.http.http_types import HTTP_FILES_ALIAS
-from restpite.http.http_types import HTTP_HEADERS_ALIAS
-from restpite.http.http_types import HTTP_JSON_ALIAS
-from restpite.http.http_types import HTTP_QUERY_STRING_ALIAS
-from restpite.http.http_types import HTTP_TIMEOUT_ALIAS
-from restpite.http.http_types import HTTP_URLTYPES_ALIAS
+from restpite.http.http_type import HTTP_AUTH_ALIAS
+from restpite.http.http_type import HTTP_CONTENT_ALIAS
+from restpite.http.http_type import HTTP_COOKIES_ALIAS
+from restpite.http.http_type import HTTP_DATA_ALIAS
+from restpite.http.http_type import HTTP_FILES_ALIAS
+from restpite.http.http_type import HTTP_HEADERS_ALIAS
+from restpite.http.http_type import HTTP_JSON_ALIAS
+from restpite.http.http_type import HTTP_QUERY_STRING_ALIAS
+from restpite.http.http_type import HTTP_TIMEOUT_ALIAS
+from restpite.http.http_type import HTTP_URLTYPES_ALIAS
 
 log = logging.getLogger(__name__)
 
@@ -32,46 +33,32 @@ log = logging.getLogger(__name__)
 class RespiteClient:
     """
 
-    # TODO: How can we dispatch both listener calls and events to user defined 'observers'?
-    # TODO: This would be pretty powerful and allow clients to register their own observers to
-    # TODO: The session, which would be notified on particular actions (listening, hooks, events etc).
+    The bread and butter to restpite.  By default restpite operates on a synchronous nature, this is
+    overridable by specifying `use_async` to `True` when instantiating a client instance.  It is possible to implement
+    your own adapter instances and have restpite call them at runtime at various stages of the work flow.
 
-    The bread and butter of restpite.  Used for persisting session data across multiple
-    HTTP requests.  In it's simplest form even simple requests create a single-use
-    session under the hood.
-
-    Inline with the TCP packet retransmission window, restpite defaults both timeouts to slightly over
-    a multiple of 3 for both connection and read timeouts respectively.
-
-    Restpite Session uses a `requests.Session` under the hood for now.
-
-    :param headers: A dictionary of headers to include in all session requests.  These are applied
-    on top of the requests default headers  which are:
-
-        `User-Agent` = `restpite-{respite-version}`
-        `Accept-Encoding` = `gzip, deflate`
-        `Accept` = `*/*` (anything)
-        `Connection` = `Keep-Alive`
-
-
-    :param connection_timeout: How long we will wait for your client to establish a remote connection, defaults to 31.00
-    :param read_timeout: How long we will wait for the server to send a response, defaults to 31.00
-    :param params: A mapping of strings to indicate query string parameters, appended to all request urls
-    :param stream: Defer the downloading response bodies until response.content is accessed.  Care is
-    advised here as sessions will not be re-allocated back to the pool until the response body has been downloaded.
-    :param verify: Verify SSL certificates, raises a SSLError otherwise, defaults to True.  Supports
-    passing a file path to either a CA_BUNDLE or directory with a certificates of trusted CAs as well as boolean.
-    As per requests standard, directories of certificates here must of been parsed with the `c_rehash` utility
-    supplied by OpenSSL.
-    :param max_redirects: integer of how many redirects requests permits before raising a
-    `TooManyRedirects` exception.
-    :param adapters: List of additional transport adapters to mount on the HTTP session.  By default
-    session ships with a simple `requests.adapter.HTTPAdapter` listening for all traffic on both http
-    and https respectively.
-    :param user_agent: The User Agent string added to subsequent request headers, if omitted restpite will
-    replace the user-agent header with its own using `restpite-{restpite-version}`.
-    :param auth: Callable for a custom authentication to pass to requests.  Subclassing
-    `requests.auth.Authbase` is advisable here.  Restpite also provides some implementations out of the box.
+    :param headers: A Mapping of header key:value pairs to be sent with every request for the life time of the
+    client instance.
+    :param handlers: A sequence of objects implementing the `Notifable` protocol.  Client will dispatch out to
+    these instances are various times through the HTTP work flow, namely before request, after response and on exc.
+    :param timeout: A tuple of up to four floats
+        - the connection timeout
+        - the read timeout
+        - the write timeout
+        - the connection pool timeout
+    :param params: A Mapping of query string parameters, restpite will auto append ?a=1&b=2 etc
+    :params verify: CA bundle required to verify the identity of the requested hosts, by default this is
+    the default CA, however a path can be provided to a SSL certificate file also, or the verification can
+    be disabled by passing False explicitly
+    :params adapter: ...
+    :params user_agent: A string to specify as the user agent for all outward requests, by default the user
+    agent is set like so: `respite-{respite_version}`, setting this explicitly to False will remove the
+    respite inbuilt user agent
+    :params auth: ...
+    :params use_async: Respite will provide an Asynchronous client, rather than a synchronous one
+    :params http2: Restpite will attempt to communicate over the HTTP/2 protocol, however should the server
+    not support HTTP/2, default HTTP/1 will be used, to see which version was used, inspecting the
+    `Response.http_version` attr can be used.
     """
 
     def __init__(
@@ -84,7 +71,12 @@ class RespiteClient:
         adapters: Optional[List[Notifyable]] = None,
         user_agent: Optional[str] = None,
         auth: HTTP_AUTH_ALIAS = None,
+        use_async: bool = False,
+        http2: bool = False,
+        base_url: HTTP_URLTYPES_ALIAS = None,
     ) -> None:
+        self.use_async = use_async
+        self.http2 = http2
         self.headers = headers or Headers()
         self.headers["User-Agent"] = (
             f"restpite-{__version__}" if not user_agent else user_agent
@@ -98,11 +90,12 @@ class RespiteClient:
         handlers = handlers.copy() if handlers is not None else []
         for handler in handlers:
             self.handler_dispatcher.subscribe(handler)
+        self.base_url = base_url
         self.client = self._prepare_client()
 
     def __getattr__(self, item: str) -> Any:
         """
-        Proxy unknown attribute lookups onto the underlying `requests.Session` instance.
+        Proxy unknown attribute lookups onto the underlying `httpx.Client` instance.
         Eventually a full API will be exposed by restpite to make this redundant but this
         will suffice for while, the plan is to expose a fully typed equivalent.  This is
         not a full `Proxy` but a mere 'do for now' while in the alpha stages, more to be
@@ -110,20 +103,24 @@ class RespiteClient:
         """
         return getattr(self.client, item)
 
-    def _prepare_client(self) -> httpx.Client:
+    def _prepare_client(self) -> BaseClient:
         """
-        Requests Session objects cannot be instantiated using some of the supported arguments of
-        restpite, restpite makes this a little easier for users who want to set some 'global' values
-        when instantiating a `RestpiteSession` where the delegating is handled here.
+        Based on various parameters of the RespiteClient instantiation, setup the low level
+        client used for HTTP communication.  This is underpinned by httpx (no longer requests)
+        and we can support both synchronous and asynchronous clients.
         """
-        session = httpx.Client()
-        session.verify = self.verify
-        session.params = self.params
-        session.headers.update(self.headers)
-        session.auth = self.auth
-        # TODO: Finish session delegation
+        client = (
+            httpx.Client(http2=self.http2)
+            if not self.use_async
+            else httpx.AsyncClient(http2=self.http2)
+        )
+        client.verify = self.verify
+        client.params = self.params
+        client.headers.update(self.headers)
+        client.auth = self.auth
+        # TODO: Finish client delegation
         # TODO: Missing (proxies, hooks, cert, trust_env, cookies, adapters)
-        return session
+        return client
 
     def __enter__(self) -> RespiteClient:
         return self
@@ -188,8 +185,6 @@ class RespiteClient:
             raise exc from None
 
     def get(self, url: HTTP_URLTYPES_ALIAS, *args, **kwargs) -> RestpiteResponse:
-        # TODO: Implement the full flow on HTTP GETs here, then we can build on it. but it should account
-        # TODO: For both listener and event/hook dispatching
         """
         Issue a HTTP GET request
         """

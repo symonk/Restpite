@@ -7,7 +7,7 @@ __version__ = importlib.metadata.version("restpite")
 
 from .http.response import RestpiteResponse
 from .protocols.restpite_protocols import Notifyable
-from .http.session import RespiteClient
+from .http.client import RespiteClient
 from .http.request import RestpiteRequest
 from .http import status_codes
 
