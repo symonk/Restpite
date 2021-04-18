@@ -25,13 +25,19 @@ Restpite
 
 Restpite is a simple python based HTTP DSL for testing restful web services easily.  It comes bundled with
 some nice continuity features making it also a perfect for standalone scripts and non test related libraries,
-however the focus here is on testing.  Some of the features of Restpite are:
+however the focus here is on testing.  Restpite supports both HTTP/1 and HTTP/2 (where the server also supports it)
+and offers both a syncronous (default) and Asyncronous client(s) where necessary.  Restpite is underpinned by
+the wonderful `httpx` library (rather than `requests`).
+
+Some of the features of Restpite are:
 
 Aim of the library:
 
  - Easily write API wrappers for testing restful web services
  - Easily build HTTP based python scripts that require resiliency out of the box
  - Support fire & forget / libraries that deal primarily with HTTP but do not care about explicitly testing something
+ - Support HTTP/1 and HTTP/2
+ - Provide the capabilities for both `Sync` and `Async` capabilities
 
 Outline of planned features:
 
@@ -56,32 +62,7 @@ A Trivial Example
 .. code-block:: python
 
     from dataclasses import dataclass
-    from dataclasses import field
-    from typing import List
-
     from restpite import get
-
-
-    @dataclass
-    class Geo:
-        lat: str
-        long: str
-
-
-    @dataclass
-    class Address:
-        street: str
-        suite: str
-        city: str
-        zipcode: str
-        geo: Geo
-
-
-    @dataclass
-    class Company:
-        name: str
-        catchPhrase: str
-        bs: str
 
 
     @dataclass
@@ -89,21 +70,14 @@ A Trivial Example
         id: int
         name: str
         username: str
-        address: Address
         phone: str
         website: str
-        company: Company
-
-
-    @dataclass
-    class Users:
-        users: List[User] = field(default_factory=list)
 
 
     def test_my_api() -> None:
-        url = "https://jsonplaceholder.typicode.com/users"
-        users = get(url).assert_was_ok().assert_application_json().deserialize(Users)
-        assert len(users) == 10
+        url, expected = "https://jsonplaceholder.typicode.com/user/foo@bar.com", 11
+        user = get(url).assert_was_ok().assert_application_json().deserialize(User)
+        assert user.id == expected
 
 
 Contributing
