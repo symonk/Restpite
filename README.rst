@@ -7,8 +7,8 @@ Restpite
 ========
 
 
-.. image:: https://github.com/symonk/restpite/actions/workflows/python-package.yml/badge.svg
-        :target: https://github.com/symonk/restpite/actions
+.. image:: https://img.shields.io/pypi/v/restpite.svg
+        :target: https://pypi.python.org/pypi/restpite
 
 .. image:: https://github.com/symonk/restpite/actions/workflows/python-package.yml/badge.svg
         :target: https://github.com/symonk/restpite/actions/workflows/python-package.yml/badge.svg
@@ -18,9 +18,8 @@ Restpite
         :alt: Documentation Status
 
 
-.. image:: https://pyup.io/repos/github/symonk/restpite/shield.svg
-     :target: https://pyup.io/account/repos/github/symonk/restpite/
-     :alt: Updates
+.. image:: https://github.com/symonk/restpite/actions/workflows/python-package.yml/badge.svg
+        :target: https://github.com/symonk/restpite/actions
 
 
 .. image:: https://codecov.io/gh/symonk/restpite/branch/master/graph/badge.svg?token=E7SVA868NR
