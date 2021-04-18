@@ -117,9 +117,7 @@ class RespiteClient:
         when instantiating a `RestpiteSession` where the delegating is handled here.
         """
         session = httpx.Client()
-        session.stream = self.defer_response_body
         session.verify = self.verify
-        session.max_redirects = self.max_redirects
         session.params = self.params
         session.headers.update(self.headers)
         session.auth = self.auth
