@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 import types
-from typing import Any
 from typing import List
 from typing import Optional
 from typing import Type
@@ -10,7 +9,8 @@ from typing import Union
 
 import httpx
 from httpx import Headers
-from httpx._client import BaseClient
+from httpx._client import AsyncClient
+from httpx._client import Client
 
 from restpite import Notifyable
 from restpite import RestpiteResponse
@@ -63,6 +63,7 @@ class RespiteClient:
 
     def __init__(
         self,
+        *,
         headers: HTTP_HEADERS_ALIAS = None,
         handlers: Optional[List[Notifyable]] = None,
         timeout: HTTP_TIMEOUT_ALIAS = None,
@@ -93,17 +94,7 @@ class RespiteClient:
         self.base_url = base_url
         self.client = self._prepare_client()
 
-    def __getattr__(self, item: str) -> Any:
-        """
-        Proxy unknown attribute lookups onto the underlying `httpx.Client` instance.
-        Eventually a full API will be exposed by restpite to make this redundant but this
-        will suffice for while, the plan is to expose a fully typed equivalent.  This is
-        not a full `Proxy` but a mere 'do for now' while in the alpha stages, more to be
-        investigated on this later.
-        """
-        return getattr(self.client, item)
-
-    def _prepare_client(self) -> BaseClient:
+    def _prepare_client(self) -> Union[Client, AsyncClient]:
         """
         Based on various parameters of the RespiteClient instantiation, setup the low level
         client used for HTTP communication.  This is underpinned by httpx (no longer requests)

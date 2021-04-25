@@ -1,39 +1,37 @@
 from __future__ import annotations
 
 from typing import Any
-from typing import Optional
+from typing import Dict
 from typing import Sequence
 from typing import Type
 
-from httpx import Headers
 from httpx import Response
-from marshmallow_dataclass import class_schema
 
 from restpite.exceptions.exceptions import RestpiteAssertionError
 from restpite.http import status_codes
+from restpite.http.schemas import RestpiteSchema
 
 
 class RestpiteResponse:
-    def __init__(self, wrapped_response: Response) -> None:
-        self.wrapped_response = wrapped_response
-        self.model: Optional[Any] = None
+    def __init__(self, delegate: Response) -> None:
+        self.delegate = delegate
 
-    @property
-    def status_code(self) -> int:
-        return self.wrapped_response.status_code  # type: ignore
+    def __getattr__(self, name: str) -> Any:
+        attr = getattr(self.delegate, name)
+        if not callable(attr):
+            return attr
 
-    @property
-    def headers(self) -> Headers:
-        return self.wrapped_response.headers
+        def wrapper(*args, **kwargs):
+            return attr(*args, **kwargs)
 
-    @property
-    def json(self) -> Any:
-        return self.wrapped_response.json()
+        return wrapper
 
-    def deserialize(self, schema: Type[Any], *args, **kwargs) -> Any:
+    def deserialize(
+        self, schema: Type[RestpiteSchema], schema_kwargs: Dict[Any, Any]
+    ) -> Any:
         # TODO: Incorporate schemas from marshmallow here to allow custom deserialization?
-        schema = class_schema(schema)()
-        return schema.dump(self.json, *args, **kwargs)
+        # TODO: Small implementation; plenty of work still to do here!
+        return schema(**schema_kwargs).load(self.delegate.json())
 
     def assert_contained_header(self, header_name: str) -> RestpiteResponse:
         """
@@ -49,7 +47,7 @@ class RestpiteResponse:
     def assert_header_matches(
         self, header: str, expected_value: str
     ) -> RestpiteResponse:
-        if self.wrapped_response.headers[header] != expected_value:
+        if self.delegate.headers[header] != expected_value:
             message = f"Http Response header: {header} did not contain the value: {expected_value}"
             self.error(message)
         return self
@@ -143,7 +141,7 @@ class RestpiteResponse:
             )
 
     def history_length_was(self, expected_length: int) -> RestpiteResponse:
-        assert len(self.wrapped_response.history) == expected_length
+        assert len(self.delegate.history) == expected_length
         return self
 
     def had_status_code(self, expected_code: int) -> RestpiteResponse:

@@ -7,13 +7,13 @@ from restpite.exceptions.exceptions import RestpiteAssertionError
 
 
 def test_response_was_ok_status_code(monkeypatch: MonkeyPatch) -> None:
-    monkeypatch.setattr("restpite.RestpiteResponse.status_code", 200)
+    monkeypatch.setattr("restpite.RestpiteResponse.status_code", 200, raising=False)
     response = RestpiteResponse(Response())
     response.assert_was_ok()
 
 
 def test_response_was_ok_failure(monkeypatch: MonkeyPatch) -> None:
-    monkeypatch.setattr("restpite.RestpiteResponse.status_code", 201)
+    monkeypatch.setattr("restpite.RestpiteResponse.status_code", 201, raising=False)
     response = RestpiteResponse(Response())
     with pytest.raises(RestpiteAssertionError) as error:
         response.assert_was_ok()
