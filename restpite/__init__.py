@@ -9,7 +9,7 @@ from .http.response import RestpiteResponse
 from .protocols.restpite_protocols import Notifyable
 from .http.client import RespiteClient
 from .http.request import RestpiteRequest
-from .http import status_codes
+from .http import status_code
 
 
 import logging
@@ -22,6 +22,6 @@ __all__ = [
     "RestpiteRequest",
     "RestpiteResponse",
     "Notifyable",
-    "status_codes",
+    "status_code",
     "__version__",
 ]
