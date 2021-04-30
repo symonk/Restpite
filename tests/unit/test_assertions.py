@@ -21,3 +21,13 @@ def test_response_was_ok_failure(monkeypatch: MonkeyPatch) -> None:
         error.value.message
         == "Http Response status code was: <201> not: <200> as expected"
     )
+
+
+@pytest.mark.parametrize("expected", ["GET", "PUT", "POST", "PATCH", "DELETE"])
+def test_assert_request_type(monkeypatch: MonkeyPatch, expected) -> None:
+    monkeypatch.setattr(
+        "restpite.RestpiteResponse.request_method", expected, raising=False
+    )
+    response = RestpiteResponse(Response())
+    func = getattr(response, f"request_verb_was_{expected.lower()}")
+    func()

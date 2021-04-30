@@ -10,12 +10,24 @@ from httpx import Response
 from restpite.exceptions.exceptions import RestpiteAssertionError
 from restpite.http import status_code
 from restpite.http.schemas import RestpiteSchema
+from restpite.http.status_code import StatusCode
+from restpite.http.verb import DELETE
+from restpite.http.verb import GET
+from restpite.http.verb import PATCH
+from restpite.http.verb import POST
+from restpite.http.verb import PUT
 from restpite.protocols.restpite_protocols import Curlable
 
 
 class RestpiteResponse(Curlable):
     def __init__(self, delegate: Response) -> None:
         self.delegate = delegate
+        self.status_code = StatusCode.from_code(self.delegate.status_code)
+
+    @property
+    def request_method(self) -> str:
+        assert isinstance(self.delegate.request.method, str)
+        return self.delegate.request.method
 
     def __getattr__(self, name: str) -> Any:
         attr = getattr(self.delegate, name)
@@ -149,6 +161,41 @@ class RestpiteResponse(Curlable):
         assert self.status_code == expected_code
         return self
 
+    def request_verb_was_get(self) -> RestpiteResponse:
+        if self.request_method != GET:
+            self.error(
+                f"Expected: HTTP {self.request_method} to be equal to: HTTP GET but it was not"
+            )
+        return self
+
+    def request_verb_was_post(self) -> RestpiteResponse:
+        if self.request_method != POST:
+            self.error(
+                f"Expected: HTTP {self.request_method} to be equal to: HTTP POST but it was not"
+            )
+        return self
+
+    def request_verb_was_patch(self) -> RestpiteResponse:
+        if self.request_method != PATCH:
+            self.error(
+                f"Expected: HTTP {self.request_method} to be equal to: HTTP PATCH but it was not"
+            )
+        return self
+
+    def request_verb_was_put(self) -> RestpiteResponse:
+        if self.request_method != PUT:
+            self.error(
+                f"Expected: HTTP {self.request_method} to be equal to: HTTP PUT but it was not"
+            )
+        return self
+
+    def request_verb_was_delete(self) -> RestpiteResponse:
+        if self.request_method != DELETE:
+            self.error(
+                f"Expected: HTTP {self.request_method} to be equal to: HTTP DELETE but it was not"
+            )
+        return self
+
     def error(self, message: str) -> None:
         """
         Responsible for raising the `RestpiteAssertionError` which will subsequently cause tests
@@ -167,3 +214,6 @@ class RestpiteResponse(Curlable):
         """
         self.assert_was_ok()
         return True
+
+    def __repr__(self) -> str:
+        return f"<[{repr(self.status_code)} : {self.delegate.url}]>"
