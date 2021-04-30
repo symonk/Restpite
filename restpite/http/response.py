@@ -152,7 +152,7 @@ class RestpiteResponse(Curlable):
     def error(self, message: str) -> None:
         """
         Responsible for raising the `RestpiteAssertionError` which will subsequently cause tests
-        to fail.  RestpiteAssertionError is a simple subclass of `AssertionError` which the aim
+        to fail.  RestpiteAssertionError is a simple subclass of `AssertionError` with the aim
         in future to bolt on more functionality, currently it serves the same purpose.
         """
         raise RestpiteAssertionError(message) from None
