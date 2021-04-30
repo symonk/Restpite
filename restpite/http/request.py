@@ -91,3 +91,4 @@ http_post = partial(RestpiteRequest, method=POST)
 http_put = partial(RestpiteRequest, method=PUT)
 http_delete = partial(RestpiteRequest, method=DELETE)
 http_patch = partial(RestpiteRequest, method=PATCH)
+http_request = RespiteClient
