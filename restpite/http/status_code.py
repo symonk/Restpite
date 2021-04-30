@@ -11,7 +11,10 @@ class StatusCode(NamedTuple):
         """
         Custom status code objects are considered equal if their `code` integers are equal
         """
-        return self.code == other.code if isinstance(other, StatusCode) else False
+        return self.code == getattr(other, "code", other)  # type: ignore
+
+    def __ne__(self, other: object) -> bool:
+        return not self.__eq__(other)  # type: ignore
 
     @classmethod
     def from_code(cls, code: int) -> StatusCode:

@@ -7,8 +7,9 @@ from restpite.exceptions.exceptions import RestpiteAssertionError
 
 
 def test_response_was_ok_status_code(monkeypatch: MonkeyPatch) -> None:
-    monkeypatch.setattr("restpite.RestpiteResponse.status_code", 200, raising=False)
-    response = RestpiteResponse(Response())
+    r = Response()
+    r.status_code = 200
+    response = RestpiteResponse(r)
     response.assert_was_ok()
 
 
@@ -25,9 +26,6 @@ def test_response_was_ok_failure(monkeypatch: MonkeyPatch) -> None:
 
 @pytest.mark.parametrize("expected", ["GET", "PUT", "POST", "PATCH", "DELETE"])
 def test_assert_request_type(monkeypatch: MonkeyPatch, expected) -> None:
-    monkeypatch.setattr(
-        "restpite.RestpiteResponse.request_method", expected, raising=False
-    )
+    monkeypatch.setattr("restpite.RestpiteResponse.request_method", expected)
     response = RestpiteResponse(Response())
-    func = getattr(response, f"request_verb_was_{expected.lower()}")
-    func()
+    getattr(response, f"request_verb_was_{expected.lower()}")()

@@ -148,7 +148,7 @@ class RestpiteResponse(Curlable):
         :param expected_range: A sequence of integers to check the status code is in
         :raises RestpiteAssertionError: If the status code is not in expected_range
         """
-        if self.status_code not in expected_range:
+        if self.status_code.code not in expected_range:
             self.error(
                 f"Expected: {self.status_code} to be in: {expected_range} but it was not"
             )
