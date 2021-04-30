@@ -5,8 +5,11 @@ from restpite import RestpiteResponse
 
 
 @runtime_checkable
-class Mountable(Protocol):
-    def mount(self):
+class Curlable(Protocol):
+    def curlify(self) -> str:
+        """
+        Converts the object into a curl string, used for recreating the request
+        """
         ...
 
 

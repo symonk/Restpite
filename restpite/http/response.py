@@ -10,9 +10,10 @@ from httpx import Response
 from restpite.exceptions.exceptions import RestpiteAssertionError
 from restpite.http import status_code
 from restpite.http.schemas import RestpiteSchema
+from restpite.protocols.restpite_protocols import Curlable
 
 
-class RestpiteResponse:
+class RestpiteResponse(Curlable):
     def __init__(self, delegate: Response) -> None:
         self.delegate = delegate
 
@@ -155,6 +156,9 @@ class RestpiteResponse:
         in future to bolt on more functionality, currently it serves the same purpose.
         """
         raise RestpiteAssertionError(message) from None
+
+    def curlify(self) -> str:
+        raise NotImplementedError
 
     def __bool__(self) -> bool:
         """
