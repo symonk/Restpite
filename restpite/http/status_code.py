@@ -1,6 +1,18 @@
-from collections import namedtuple
+from __future__ import annotations
 
-StatusCode = namedtuple("StatusCode", "code message")
+from typing import NamedTuple
+
+
+class StatusCode(NamedTuple):
+    code: int
+    message: str
+
+    def __eq__(self, other: object) -> bool:
+        """
+        Custom status code objects are considered equal if their `code` integers are equal
+        """
+        return self.code == other.code if isinstance(other, StatusCode) else False
+
 
 # Informative Status Code Objects
 CONTINUE = StatusCode(100, "Continue")

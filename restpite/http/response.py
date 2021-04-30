@@ -8,7 +8,7 @@ from typing import Type
 from httpx import Response
 
 from restpite.exceptions.exceptions import RestpiteAssertionError
-from restpite.http import status_codes
+from restpite.http import status_code
 from restpite.http.schemas import RestpiteSchema
 
 
@@ -75,8 +75,8 @@ class RestpiteResponse:
         """
         # TODO: Implement custom status codes to avoid indexing tuple sequences etc
         # TODO: https://github.com/symonk/restpite/issues/98
-        if self.status_code != status_codes.OK[0]:
-            message = f"Http Response status code was: <{self.status_code}> not: <{status_codes.OK[0]}> as expected"
+        if self.status_code != status_code.OK[0]:
+            message = f"Http Response status code was: <{self.status_code}> not: <{status_code.OK[0]}> as expected"
             self.error(message)
         return self
 
@@ -126,7 +126,7 @@ class RestpiteResponse:
         return self
 
     def assert_was_forbidden(self) -> RestpiteResponse:
-        assert self.status_code == status_codes.FORBIDDEN[0]
+        assert self.status_code == status_code.FORBIDDEN[0]
         return self
 
     def _assert_response_code_in_range(self, expected_range: Sequence[int]) -> None:
