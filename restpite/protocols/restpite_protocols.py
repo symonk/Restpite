@@ -1,7 +1,11 @@
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
 from typing import Protocol
 from typing import runtime_checkable
 
-from restpite import RestpiteResponse
+if TYPE_CHECKING:
+    from restpite import RestpiteResponse
 
 
 @runtime_checkable
