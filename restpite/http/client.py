@@ -143,7 +143,7 @@ class RespiteClient:
         """
         Responsible for managing the actual HTTP Request from request -> Response
         # TODO: Understand these types (args)
-        # TODO: Understand the proper flow of the traffic through the underlying requests library
+        # TODO: Understand the proper flow of the traffic through the underlying httpx library
         # TODO: Dispatching hooks mechanism around some of this
         # TODO: Hooks for raw request sending, raw response received, post RestpiteResponse, post RequestRequest
         # TODO: handlers = dispatching hook / calls to client code, adapter = transport adapters of requests
