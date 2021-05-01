@@ -17,11 +17,15 @@ from restpite.http.http_type import HTTP_QUERY_STRING_ALIAS
 from restpite.http.http_type import HTTP_TIMEOUT_ALIAS
 from restpite.http.http_type import HTTP_URLTYPES_ALIAS
 from restpite.http.http_type import HTTP_VERIFY_ALIAS
+from restpite.http.verb import CONNECT
 from restpite.http.verb import DELETE
 from restpite.http.verb import GET
+from restpite.http.verb import HEAD
+from restpite.http.verb import OPTIONS
 from restpite.http.verb import PATCH
 from restpite.http.verb import POST
 from restpite.http.verb import PUT
+from restpite.http.verb import TRACE
 from restpite.protocols.restpite_protocols import Notifyable
 
 
@@ -86,9 +90,13 @@ class RestpiteRequest:
         }
 
 
+http_connect = partial(RestpiteRequest, method=CONNECT)
+http_delete = partial(RestpiteRequest, method=DELETE)
 http_get = partial(RestpiteRequest, method=GET)
+http_head = partial(RestpiteRequest, method=HEAD)
+http_options = partial(RestpiteRequest, method=OPTIONS)
+http_patch = partial(RestpiteRequest, method=PATCH)
 http_post = partial(RestpiteRequest, method=POST)
 http_put = partial(RestpiteRequest, method=PUT)
-http_delete = partial(RestpiteRequest, method=DELETE)
-http_patch = partial(RestpiteRequest, method=PATCH)
+http_trace = partial(RestpiteRequest, method=TRACE)
 http_request = RespiteClient
