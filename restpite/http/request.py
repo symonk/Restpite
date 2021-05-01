@@ -90,13 +90,13 @@ class RestpiteRequest:
         }
 
 
-http_connect = partial(RestpiteRequest, method=CONNECT)
-http_delete = partial(RestpiteRequest, method=DELETE)
-http_get = partial(RestpiteRequest, method=GET)
-http_head = partial(RestpiteRequest, method=HEAD)
-http_options = partial(RestpiteRequest, method=OPTIONS)
-http_patch = partial(RestpiteRequest, method=PATCH)
-http_post = partial(RestpiteRequest, method=POST)
-http_put = partial(RestpiteRequest, method=PUT)
-http_trace = partial(RestpiteRequest, method=TRACE)
+http_connect = partial(RestpiteRequest, CONNECT)
+http_delete = partial(RestpiteRequest, DELETE)
+http_get = partial(RestpiteRequest, GET)
+http_head = partial(RestpiteRequest, HEAD)
+http_options = partial(RestpiteRequest, OPTIONS)
+http_patch = partial(RestpiteRequest, PATCH)
+http_post = partial(RestpiteRequest, POST)
+http_put = partial(RestpiteRequest, PUT)
+http_trace = partial(RestpiteRequest, TRACE)
 http_request = RespiteClient
