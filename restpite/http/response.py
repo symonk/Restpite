@@ -86,8 +86,8 @@ class RestpiteResponse(Curlable):
         """
 
         """
-        if self.status_code != 200:
-            message = f"Http Response status code was: <{self.status_code}> not: <{status_code.OK[0]}> as expected"
+        if not self.status_code == 200:
+            message = f"Http Response status code was: <{self.status_code}> not: <200> as expected"
             self.error(message)
         return self
 
