@@ -23,13 +23,13 @@ Restpite
 
 ----
 
-Restpite is a simple python based HTTP DSL for testing restful web services easily.  Supporting both HTTP/1 and
+Restpite is a simple python based HTTP DSL for testing restful web services easily.  Supporting both HTTP/1.1 and
 HTTP/2 with both a synchronous and Asynchronous capable client.  Weather you are writing standalone scripts
 or end to end system tests for a restful web service, restpite is the library for you.
 
 Features of restpite:
 
- - Supports HTTP/1 & HTTP/2
+ - Supports HTTP/1.1 & HTTP/2
  - Client supports both `sync` and `async` to avoid needlessly blocking on IO operations like requests
  - Extendable handler and hook dispatching system to allow client code to intercept HTTP flow
  - Powerful in built assertions for everything imaginable on your response objects
@@ -39,39 +39,3 @@ Features of restpite:
  - Tons of other cool features
 
 ----
-
-A Trivial Example
-
-.. code-block:: python
-
-    from dataclasses import dataclass
-    from restpite import get
-
-
-    @dataclass
-    class User:
-        id: int
-        name: str
-        username: str
-        phone: str
-        website: str
-
-
-    def test_my_api() -> None:
-        url, expected = "https://jsonplaceholder.typicode.com/user/foo@bar.com", 11
-        user = get(url).assert_was_ok().assert_application_json().deserialize(User)
-        assert user.id == expected
-
-
-Contributing
-----
-
- .. code-block:: console
-
-    git@github.com:symonk/restpite.git
-    python -m venv .venv
-    source .venv/bin/activate
-    pip install -e ".[testing]"
-    pre-commit install
-    tox -e linting, py38
-    push changes to upstream branch and open a pull request!
