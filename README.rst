@@ -23,37 +23,20 @@ Restpite
 
 ----
 
-Restpite is a simple python based HTTP DSL for testing restful web services easily.  It comes bundled with
-some nice continuity features making it also a perfect for standalone scripts and non test related libraries,
-however the focus here is on testing.  Restpite supports both HTTP/1 and HTTP/2 (where the server also supports it)
-and offers both a syncronous (default) and Asyncronous client(s) where necessary.  Restpite is underpinned by
-the wonderful `httpx` library (rather than `requests`).
+Restpite is a simple python based HTTP DSL for testing restful web services easily.  Supporting both HTTP/1 and
+HTTP/2 with both a synchronous and Asynchronous capable client.  Weather you are writing standalone scripts
+or end to end system tests for a restful web service, restpite is the library for you.
 
-Some of the features of Restpite are:
+Features of restpite:
 
-Aim of the library:
-
- - Easily write API wrappers for testing restful web services
- - Easily build HTTP based python scripts that require resiliency out of the box
- - Support fire & forget / libraries that deal primarily with HTTP but do not care about explicitly testing something
- - Support HTTP/1 and HTTP/2
- - Provide the capabilities for both `Sync` and `Async` capabilities
-
-Outline of planned features:
-
- - Support for customisable, retryable requests (idempotent or not)
- - Support for all HTTP Verbs and permit user defined custom ones, `MKCOL` as an example
- - Inbuilt tracking of all HTTP traffic, permitting logging output
- - Pytest plugin `pytest-restpite` (way later on)
- - Powerful, Customisable `RestpiteResponse` deserialization to user defined objects
- - Ability to track performance metrics of all HTTP traffic
- - In built assertions to `RestpiteRequest` objects to make test writing clean and concise
- - Observable / Adapter system to allow client code to easily hook into the HTTP flow and modify behaviour
- - Resiliency notifications (minor use case but perhaps useful for some users)
- - Request-to-curl command output (easy recreation in test environments etc)
- - Allure integrations for continuous integration testing visibility / ease of use
- - English, readable DSL
- - Support for BDD scenario test writing (Given, Then, When etc)
+ - Supports HTTP/1 & HTTP/2
+ - Client supports both `sync` and `async` to avoid needlessly blocking on IO operations like requests
+ - Extendable handler and hook dispatching system to allow client code to intercept HTTP flow
+ - Powerful in built assertions for everything imaginable on your response objects
+ - Integrates gracefully with marshmallow to easily deserialize response json into python objects
+ - Intuitive DSL, underpinned by the brilliant `httpx` library
+ - Automatic and customisable performance and request-response tracking in various formats
+ - Tons of other cool features
 
 ----
 
