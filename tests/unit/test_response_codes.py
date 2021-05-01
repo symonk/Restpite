@@ -16,9 +16,10 @@ def test_assert_informative(status_code):
     assert route.called
 
 
-# TODO => BUG! 207 compares 300 != 207 - why? weird..
 @respx.mock
-@pytest.mark.parametrize("status_code", (200, 201, 202, 203, 204, 205, 206, 208, 226))
+@pytest.mark.parametrize(
+    "status_code", (200, 201, 202, 203, 204, 205, 206, 207, 208, 226)
+)
 def test_assert_successful(status_code):
     route = _setup_route(status_code)
     RespiteClient().get(MOCK_URL).assert_success()

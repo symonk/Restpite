@@ -86,9 +86,7 @@ class RestpiteResponse(Curlable):
         """
 
         """
-        # TODO: Implement custom status codes to avoid indexing tuple sequences etc
-        # TODO: https://github.com/symonk/restpite/issues/98
-        if self.status_code != status_code.OK[0]:
+        if self.status_code != 200:
             message = f"Http Response status code was: <{self.status_code}> not: <{status_code.OK[0]}> as expected"
             self.error(message)
         return self
