@@ -39,3 +39,5 @@ Features of restpite:
  - Tons of other cool features
 
 ----
+
+<p align="center">&mdash; ⭐️ &mdash;</p>
