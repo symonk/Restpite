@@ -24,7 +24,7 @@ Restpite
 ----
 
 Restpite is a simple python based HTTP DSL for testing restful web services easily.  Supporting both HTTP/1.1 and
-HTTP/2 with both a synchronous and Asynchronous capable client.  Weather you are writing standalone scripts
+HTTP/2 with both a `sync`` and `async` capable client.  Whether you are writing standalone scripts
 or end to end system tests for a restful web service, restpite is the library for you.
 
 Features of restpite:
