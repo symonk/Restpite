@@ -16,6 +16,7 @@ from restpite import Notifyable
 from restpite import RestpiteResponse
 from restpite import __version__
 from restpite.dispatch.dispatcher import HandlerDispatcher
+from restpite.dispatch.handlers import BUILT_IN_HANDLERS
 from restpite.http.http_type import HTTP_AUTH_ALIAS
 from restpite.http.http_type import HTTP_CONTENT_ALIAS
 from restpite.http.http_type import HTTP_COOKIES_ALIAS
@@ -88,8 +89,9 @@ class RespiteClient:
         self.adapters = adapters or []
         self.auth = auth
         self.handler_dispatcher = HandlerDispatcher()
+        self.built_in_handlers = BUILT_IN_HANDLERS
         handlers = handlers.copy() if handlers is not None else []
-        for handler in handlers:
+        for handler in BUILT_IN_HANDLERS + handlers:
             self.handler_dispatcher.subscribe(handler)
         self.base_url = base_url
         self.client = self._prepare_client()
@@ -150,23 +152,25 @@ class RespiteClient:
         # TODO: hooks need dispatched here multiple times, Hooks need invoked as well to permit control!
         # TODO: Built in capturing of all traffic, thinking simple `restpite.json` (configurable on|off) ?
         """
+        req_kw = {
+            "method": method,
+            "url": url,
+            "content": content,
+            "data": data,
+            "files": files,
+            "json": json,
+            "params": params,
+            "headers": headers,
+            "cookies": cookies,
+        }
+        send_kw = {"auth": auth, "allow_redirects": allow_redirects, "timeout": timeout}
         try:
-            self.handler_dispatcher.dispatch("before_sending_request")
+            unsent_request = self.client.build_request(**req_kw)
+            self.handler_dispatcher.dispatch(
+                "before_sending_request", request=unsent_request, **req_kw
+            )
             response = RestpiteResponse(
-                self.client.request(
-                    method,
-                    url,
-                    content=content,
-                    data=data,
-                    files=files,
-                    json=json,
-                    params=params,
-                    headers=headers,
-                    cookies=cookies,
-                    auth=auth,
-                    allow_redirects=allow_redirects,
-                    timeout=timeout,
-                )
+                self.client.send(request=unsent_request, **send_kw)
             )
             self.handler_dispatcher.dispatch("after_receiving_response", response)
             return response

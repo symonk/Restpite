@@ -3,7 +3,7 @@ import contextlib
 from typing import Any
 from typing import Deque
 
-from restpite.protocols.restpite_protocols import Notifyable
+from restpite.dispatch.dispatch_protocols import Notifyable
 
 
 class HandlerDispatcher:
@@ -33,11 +33,12 @@ class HandlerDispatcher:
         """
         self._handlers.clear()
 
-    def dispatch(self, method: str, *args: Any, **kwargs: Any) -> None:
+    def dispatch(self, method_name: str, *args: Any, **kwargs: Any) -> None:
         """
         Dispatches function calls to all handlers.  By default these handlers are executed in
         LIFO order.  `RestpiteSession` objects dispatch to their registered handlers here,
         invoking the well defined methods of the Notifyable Protocol.
         """
         for handler in self._handlers:
-            getattr(handler, method)(*args, **kwargs)
+            attr = getattr(handler, method_name)
+            attr(*args, **kwargs)

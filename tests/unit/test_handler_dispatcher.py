@@ -1,12 +1,12 @@
 from pytest_mock import MockerFixture
 
+from restpite.dispatch.dispatch_protocols import Notifyable
 from restpite.dispatch.dispatcher import HandlerDispatcher
 from restpite.http.response import RestpiteResponse
-from restpite.protocols.restpite_protocols import Notifyable
 
 
 class SpyHandler:
-    def before_sending_request(self) -> None:
+    def before_sending_request(self, request) -> None:
         ...
 
     def after_receiving_response(self, response: RestpiteResponse) -> None:

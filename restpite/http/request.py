@@ -6,6 +6,7 @@ from typing import Optional
 
 from restpite import RespiteClient
 from restpite import RestpiteResponse
+from restpite.dispatch.dispatch_protocols import Notifyable
 from restpite.http.http_type import HTTP_AUTH_ALIAS
 from restpite.http.http_type import HTTP_CONTENT_ALIAS
 from restpite.http.http_type import HTTP_COOKIES_ALIAS
@@ -26,7 +27,6 @@ from restpite.http.verb import PATCH
 from restpite.http.verb import POST
 from restpite.http.verb import PUT
 from restpite.http.verb import TRACE
-from restpite.protocols.restpite_protocols import Notifyable
 
 
 class RestpiteRequest:
