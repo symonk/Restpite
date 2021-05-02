@@ -1,8 +1,8 @@
-import pytest
 from pytest_mock import MockerFixture
 
 from restpite.dispatch.dispatcher import HandlerDispatcher
 from restpite.http.response import RestpiteResponse
+from restpite.protocols.restpite_protocols import Notifyable
 
 
 class SpyHandler:
@@ -31,19 +31,26 @@ def test_lifo_handler_dispatching() -> None:
     ...
 
 
-def test_raises_on_no_protocol() -> None:
-    with pytest.raises(TypeError) as error:
-        handler = HandlerDispatcher()
-        handler.subscribe(1337)  # noqa
-    assert (
-        error.value.args[0]
-        == "Type of handle was: <class 'int'>, it should be: <class 'typing._ProtocolMeta'>"
-    )
+def test_handlers_fail_to_store_non_notifyable() -> None:
+    handler = HandlerDispatcher()
+    handler.subscribe(None)
+    assert not handler._handlers
+
+
+def test_handlers_register() -> None:
+    handler = HandlerDispatcher()
+
+    class Klazz(Notifyable):
+        ...
+
+    klazz = Klazz()
+    handler.subscribe(klazz)
+    assert len(handler._handlers) == 1 and handler._handlers[0] == klazz
 
 
 def test_dispatch_handler_resetting():
     dispatcher = HandlerDispatcher()
     dispatcher.subscribe(SpyHandler())
-    assert len(dispatcher.handlers) == 1
+    assert len(dispatcher._handlers) == 1
     dispatcher.reset()
-    assert len(dispatcher.handlers) == 0
+    assert len(dispatcher._handlers) == 0
