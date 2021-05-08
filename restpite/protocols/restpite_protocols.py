@@ -11,3 +11,8 @@ class Curlable(Protocol):
         Converts the object into a curl string, used for recreating the request
         """
         ...
+
+
+class Assertable(Protocol):
+    def raise_assertion_failure(self, message: str) -> None:
+        ...

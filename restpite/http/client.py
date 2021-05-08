@@ -80,9 +80,7 @@ class RespiteClient:
         self.use_async = use_async
         self.http2 = http2
         self.headers = headers or Headers()
-        self.headers["User-Agent"] = (
-            f"restpite-{__version__}" if not user_agent else user_agent
-        )
+        self.headers["User-Agent"] = f"restpite-{__version__}" if not user_agent else user_agent
         self.timeout = timeout
         self.params = params or {}
         self.verify = verify
@@ -102,11 +100,7 @@ class RespiteClient:
         client used for HTTP communication.  This is underpinned by httpx (no longer requests)
         and we can support both synchronous and asynchronous clients.
         """
-        client = (
-            httpx.Client(http2=self.http2)
-            if not self.use_async
-            else httpx.AsyncClient(http2=self.http2)
-        )
+        client = httpx.Client(http2=self.http2) if not self.use_async else httpx.AsyncClient(http2=self.http2)
         client.verify = self.verify
         client.params = self.params
         client.headers.update(self.headers)
@@ -166,12 +160,8 @@ class RespiteClient:
         send_kw = {"auth": auth, "allow_redirects": allow_redirects, "timeout": timeout}
         try:
             unsent_request = self.client.build_request(**req_kw)
-            self.handler_dispatcher.dispatch(
-                "before_sending_request", request=unsent_request, **req_kw
-            )
-            response = RestpiteResponse(
-                self.client.send(request=unsent_request, **send_kw)
-            )
+            self.handler_dispatcher.dispatch("before_sending_request", request=unsent_request, **req_kw)
+            response = RestpiteResponse(self.client.send(request=unsent_request, **send_kw))
             self.handler_dispatcher.dispatch("after_receiving_response", response)
             return response
         except Exception as exc:

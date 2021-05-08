@@ -12,17 +12,15 @@ MOCK_URL = "https://www.google.com"
 @pytest.mark.parametrize("status_code", (100, 101, 102, 103))
 def test_assert_informative(status_code):
     route = _setup_route(status_code)
-    RespiteClient().get(MOCK_URL).assert_informative()
+    RespiteClient().get(MOCK_URL).had_informative_status_code()
     assert route.called
 
 
 @respx.mock
-@pytest.mark.parametrize(
-    "status_code", (200, 201, 202, 203, 204, 205, 206, 207, 208, 226)
-)
+@pytest.mark.parametrize("status_code", (200, 201, 202, 203, 204, 205, 206, 207, 208, 226))
 def test_assert_successful(status_code):
     route = _setup_route(status_code)
-    RespiteClient().get(MOCK_URL).assert_success()
+    RespiteClient().get(MOCK_URL).had_success_status_code()
     assert route.called
 
 
@@ -30,7 +28,7 @@ def test_assert_successful(status_code):
 @pytest.mark.parametrize("status_code", (300, 301, 302, 303, 304, 305, 307, 308))
 def test_assert_redirect(status_code):
     route = _setup_route(status_code)
-    RespiteClient().get(MOCK_URL).assert_redirect()
+    RespiteClient().get(MOCK_URL).had_redirect_status_code()
     assert route.called
 
 
@@ -71,17 +69,15 @@ CLIENT_ERRORS = (
 @pytest.mark.parametrize("status_code", CLIENT_ERRORS)
 def test_assert_client_error(status_code):
     route = _setup_route(status_code)
-    RespiteClient().get(MOCK_URL).assert_client_error()
+    RespiteClient().get(MOCK_URL).had_client_error_status_code()
     assert route.called
 
 
 @respx.mock
-@pytest.mark.parametrize(
-    "status_code", (500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511)
-)
+@pytest.mark.parametrize("status_code", (500, 501, 502, 503, 504, 505, 506, 507, 508, 510, 511))
 def test_assert_server_error(status_code):
     route = _setup_route(status_code)
-    RespiteClient().get(MOCK_URL).assert_server_error()
+    RespiteClient().get(MOCK_URL).had_server_error_status_code()
     assert route.called
 
 

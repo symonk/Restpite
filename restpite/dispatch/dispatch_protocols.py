@@ -14,17 +14,7 @@ class Notifyable(Protocol):
     """
 
     def before_sending_request(
-        self,
-        request: Request,
-        method,
-        url,
-        content,
-        data,
-        files,
-        json,
-        params,
-        headers,
-        cookies,
+        self, request: Request, method, url, content, data, files, json, params, headers, cookies
     ) -> None:
         ...
 

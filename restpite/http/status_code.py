@@ -4,6 +4,7 @@ from typing import NamedTuple
 
 
 class StatusCode(NamedTuple):
+    # TODO: Not too sure on this whole concept, codes should probably just be integers?
     code: int
     message: str
 
