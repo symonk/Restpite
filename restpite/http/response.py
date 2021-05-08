@@ -124,6 +124,12 @@ class RestpiteResponse(Curlable):
     # -------------------------------- HTTP REQUEST HEADER ASSERTIONS -------------------------------------
 
     def request_verb_was(self, expected_method: str) -> RestpiteResponse:
+        """
+        Checks the request HTTP method type that was initially sent to the server.  These have relatively
+        simple use, as it would be rare to assert on a request that the client crafted.
+
+        :param expected_method: The HTTP Verb (string) that the request method should be
+        """
         if self.request_method != expected_method.upper():
             self.raise_assert_failure(REQUEST_VERB_MISMATCH.format(self.request_method, expected_method))
         return self
