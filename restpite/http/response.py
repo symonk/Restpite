@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import functools
 from typing import Any
 from typing import AnyStr
 from typing import Dict
@@ -14,6 +15,15 @@ from restpite.constants.response_assertion_templates import RESPONSE_STATUS_CODE
 from restpite.exceptions.exceptions import RestpiteAssertionError
 from restpite.http.schemas import RestpiteSchema
 from restpite.http.status_code import StatusCode
+from restpite.http.verb import CONNECT
+from restpite.http.verb import DELETE
+from restpite.http.verb import GET
+from restpite.http.verb import HEAD
+from restpite.http.verb import OPTIONS
+from restpite.http.verb import PATCH
+from restpite.http.verb import POST
+from restpite.http.verb import PUT
+from restpite.http.verb import TRACE
 from restpite.protocols.restpite_protocols import Curlable
 
 
@@ -121,7 +131,7 @@ class RestpiteResponse(Curlable):
             self.raise_assert_failure(RESPONSE_NO_HEADER.format(header))
         return self
 
-    # -------------------------------- HTTP REQUEST HEADER ASSERTIONS -------------------------------------
+    # -------------------------------- HTTP REQUEST RELATED ASSERTIONS -------------------------------------
 
     def request_verb_was(self, expected_method: str) -> RestpiteResponse:
         """
@@ -133,6 +143,16 @@ class RestpiteResponse(Curlable):
         if self.request_method != expected_method.upper():
             self.raise_assert_failure(REQUEST_VERB_MISMATCH.format(self.request_method, expected_method))
         return self
+
+    request_verb_was_connect = functools.partialmethod(request_verb_was, CONNECT)
+    request_verb_was_delete = functools.partialmethod(request_verb_was, DELETE)
+    request_verb_was_get = functools.partialmethod(request_verb_was, GET)
+    request_verb_was_head = functools.partialmethod(request_verb_was, HEAD)
+    request_verb_was_options = functools.partialmethod(request_verb_was, OPTIONS)
+    request_verb_was_patch = functools.partialmethod(request_verb_was, PATCH)
+    request_verb_was_post = functools.partialmethod(request_verb_was, POST)
+    request_verb_was_put = functools.partialmethod(request_verb_was, PUT)
+    request_verb_was_trace = functools.partialmethod(request_verb_was, TRACE)
 
     # ------------------------------------------------------------------------------------------------------
 
